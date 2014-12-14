@@ -1,0 +1,30 @@
+2014-12-06	psf563	<dev@sergioferraresi@it>:
+
+(+++++)	UI: add GNU GPL menu item in the About Menu
+(+++++)	reorganize classes and packages
+(+++++)	create a SharedResources class in it.sergioferraresi.att.resources and move icons/xsds here
+(++++)	log4j
+(++++)	implement the MVC architectural pattern
+(+++)	SWT UI implementation
+(++)	exec.sh: useful? to improve. make a exec.bat?
+(++)	att.jar: rename in "att_vYYYYmmdd_x_y_z"
+(++)	improve build.xml (relative paths)
+
+--------------------------------------------------------------------------------
+(+++++)	2010/12/17: nuova idea per interfaccia TCB: vedi appunti al 17/12/2010
+(+++++)	2010/12/17: nuova idea per migliorare la registrazione/esecuzione dei test: vedi appunti al 20/12/2010
+(+++++)	2010/12/17: che messaggio esce se durante l'esecuzione del test si verifica un errore???
+(+++++)	2010/12/17: nella console bisogna permettere ai test di essere passati senza path
+(+++++)	2010/12/17: a volte la finestra del TCB non viene messa in primo piano (gruppi di comandi in win. linux?)
+(+++++)	2010/12/17: (WINDOWS) nel test execution ci sono problemi a far partire l'applicazione: deve essere già avviata
+(+++++)	2010/12/17: il colore del tc/ts deve cambiare dopo la validazione
+(+++++)	2010/12/17: intelligentWait da migliorare ulteriormente
+(+++++)	2010/12/17: l'icona del semaforo è inutile in windows perché non si vede
+(+++++)	2010/12/17: quando vado nel TCB, faccio un TS, torno nel TCB e poi ancora nel TS, le liste danno problemi: si svuotano e diventano grigie
+(+++++)	2010/12/17: se IE, abbassa lo screenshot di 5px
+(+++++)	2010/12/17: nell'interfaccia da console, come posso eseguire i tests se non riduco ad icona il terminale???
+(+++++)	2010/12/17: bisogna pulire la tabella dei results perché appende in coda se faccio altri test
+(+++)	2010/12/17: al primo avvio dell'ATT, potrebbe comparire una semi-finestra d'installazione che chiede dove salvare il programma
+(+++)	2010/12/17: una classe TestSuiteBuilder per conto suo
+(++)	2010/12/17: script exec: controllo su modifica dei file class in modo da non doverli compilare sempre
+(++)	2010/12/17: script exec: permetti il passaggio di parametri al jar

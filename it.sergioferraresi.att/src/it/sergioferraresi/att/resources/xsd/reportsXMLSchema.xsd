@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           xml:lang="en">
+
+  <!-- simple types definition -->
+  <xs:simpleType name="testStatusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Pass"/>
+      <xs:enumeration value="Pending"/>
+      <xs:enumeration value="Fail"/>
+      <xs:enumeration value="Error"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="imageStatusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Accepted"/>
+      <xs:enumeration value="Pending"/>
+      <xs:enumeration value="Rejected"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- complex types definition -->
+  <xs:complexType name="screenshotType">
+    <xs:sequence>
+      <xs:element ref="stepId"/>
+      <xs:element ref="path"/>
+      <xs:element ref="details"/>
+      <xs:element ref="onRevision"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="screenshotsToVerifyType">
+    <xs:sequence>
+      <xs:element ref="screenshot" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="testSuiteType">
+    <xs:sequence>
+      <xs:element ref="name"/>
+      <xs:element ref="status"/>
+      <xs:element ref="testCase" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="elapsedTime"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="testCaseType">
+    <xs:sequence>
+      <xs:element ref="name"/>
+      <xs:element ref="status"/>
+      <xs:element ref="screenshotsToVerify" minOccurs="0" maxOccurs ="1"/>
+      <xs:element ref="elapsedTime"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- definition of simple elements -->
+  <xs:element name="name" type="xs:string"/>
+  <xs:element name="path" type="xs:string"/>
+  <xs:element name="details" type="xs:string"/>
+  <xs:element name="elapsedTime" type="xs:string"/>
+  <xs:element name="status" type="testStatusType"/>
+  <xs:element name="onRevision" type="imageStatusType"/>
+  <xs:element name="testCase" type="testCaseType"/>
+  <xs:element name="testSuite" type="testSuiteType"/>
+  <xs:element name="screenshot" type="screenshotType"/>
+  <xs:element name="stepId" type="xs:nonNegativeInteger"/>
+  <xs:element name="screenshotsToVerify" type="screenshotsToVerifyType"/>
+
+  <!-- root element -->
+  <xs:element name="testsResultsDescription">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="testSuite"/>
+        <xs:element ref="testCase"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

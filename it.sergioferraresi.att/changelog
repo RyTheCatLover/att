@@ -1,0 +1,44 @@
+2014-12-14	psf563	<dev@sergioferraresi@it>
+
+	* moved the project from NetBeans to Eclipse (actual release Eclipse 
+	  Luna 4.4.1, build id 20140925-1800):
+		* replaced the NetBeans build.xml file with the Eclipse build.xml file
+	* moved the project from MEEO's SVN repository to github.com
+	* projet package rebranding from "automatictestingtool" to 
+	  "it.sergioferraresi.att" 
+	* released the ATT program under the GNU GPL license
+	* project splitted into: it.sergioferraresi.att and 
+	  it.sergioferraresi.att.doc
+	* created a new TODO file (merged with the previous one)
+	* moved all the resources from the "programImages" and "programUtilFiles" 
+	  to the it.sergioferraresi.att.resources.icon and 
+	  it.sergioferraresi.att.resources.xsd packages
+	* updated the mail references
+
+-------------------------------------------------------------------------------
+
+20XX-XX-XX  sergio  <sergioferraresi@ferrara.linux.it>
+
+      * fixed bug b0001: risolto il problema della
+	digitazione: dopo aver digitato una stringa
+	veniva premuto anche un "ESC"
+
+      * fixed bug b0002: se lo stato di un TC/TS è
+	uguale a "Error" ma contiene screenshots da
+	validare, in fase di validazione è possibile
+	validare i suoi screenshots ma il suo stato
+	non cambia;
+
+      * fixed bug b0003: è possibile digitare le
+	lettere maiuscole
+
+      * implemented improvement i0001: nel "Commands
+	Menu" del Test Case Builder è stata aggiunta
+	la voce "Click, clean and type";
+
+      * implemented improvement i0002: nel "Commands
+	Menu" del Test Case Builder è stato invertito
+	l'ordine delle voci "Click and Type (without
+	"ESC")" e "Click and Type (with "ESC")";
+
+      * changelog: aggiunto il file changelog;

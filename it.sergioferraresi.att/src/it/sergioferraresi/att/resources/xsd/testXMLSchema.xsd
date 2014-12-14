@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           xml:lang="en">
+
+  <!-- simple types definition -->
+  <xs:simpleType name="statusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="draft"/>
+      <xs:enumeration value="accepted"/>
+      <xs:enumeration value="rejected"/>
+      <xs:enumeration value="pendingBugfix"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- complex types definition -->
+  <xs:complexType name="emptyElementType">
+    <xs:complexContent>
+      <xs:restriction base="xs:anyType">
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="pointType">
+    <xs:attribute name="x" type="xs:nonNegativeInteger" use="required"/>
+    <xs:attribute name="y" type="xs:nonNegativeInteger" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="fromPointToPointType">
+    <xs:attribute name="startX" type="xs:nonNegativeInteger" use="required"/>
+    <xs:attribute name="startY" type="xs:nonNegativeInteger" use="required"/>
+    <xs:attribute name="endX" type="xs:nonNegativeInteger" use="required"/>
+    <xs:attribute name="endY" type="xs:nonNegativeInteger" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="techSpecType">
+    <xs:sequence>
+      <xs:element ref="specName"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="stepType">
+    <xs:choice>
+      <xs:element ref="moveTo"/>
+      <xs:element ref="dragAndDrop"/>
+      <xs:element ref="waitForChanges"/>
+      <xs:element ref="pressStringKeys"/>
+      <xs:element ref="singleLeftClick"/>
+      <xs:element ref="waitForNSeconds"/>
+      <xs:element ref="pressCommandKeys"/>
+      <xs:element ref="singleRightClick"/>
+      <xs:element ref="startApplication"/>
+      <xs:element ref="moveAndSingleLeftClick"/>
+      <xs:element ref="takeAndSaveAScreenshot"/>
+      <xs:element ref="takeAScreenshotToVerify"/>
+      <xs:element ref="moveAndSingleRightClick"/>
+      <xs:element ref="takeAWaitForChangesScreenshot"/>
+    </xs:choice>
+    <xs:attribute name="id" type="xs:integer" use="required"/>
+  </xs:complexType>
+
+  <!-- definition of simple elements -->
+  <xs:element name="date" type="xs:date"/>
+  <xs:element name="step" type="stepType"/>
+  <xs:element name="name" type="xs:string"/>
+  <xs:element name="path" type="xs:string"/>
+  <xs:element name="title" type="xs:string"/>
+  <xs:element name="moveTo" type="pointType"/>
+  <xs:element name="creator" type="xs:string"/>
+  <xs:element name="details" type="xs:string"/>
+  <xs:element name="purpose" type="xs:string"/>
+  <xs:element name="status" type="statusType"/>
+  <xs:element name="stepId" type="xs:integer"/>
+  <xs:element name="version" type="xs:string"/>
+  <xs:element name="specName" type="xs:string"/>
+  <xs:element name="contributor" type="xs:string"/>
+  <xs:element name="description" type="xs:string"/>
+  <xs:element name="externalFile" type="xs:string"/>
+  <xs:element name="internalNotes" type="xs:string"/>
+  <xs:element name="preconditions" type="xs:string"/>
+  <xs:element name="pressStringKeys" type="xs:string"/>
+  <xs:element name="pressCommandKeys" type="xs:string"/>
+  <xs:element name="startApplication" type="xs:string"/>
+  <xs:element name="technicalSpec" type="techSpecType"/>
+  <xs:element name="dragAndDrop" type="fromPointToPointType"/>
+  <xs:element name="moveAndSingleLeftClick" type="pointType"/>
+  <xs:element name="singleLeftClick" type="emptyElementType"/>
+  <xs:element name="moveAndSingleRightClick" type="pointType"/>
+  <xs:element name="singleRightClick" type="emptyElementType"/>
+  <xs:element name="waitForChanges" type="fromPointToPointType"/>
+  <xs:element name="waitForNSeconds" type="xs:nonNegativeInteger"/>
+  <xs:element name="takeAndSaveAScreenshot" type="fromPointToPointType"/>
+  <xs:element name="takeAScreenshotToVerify" type="fromPointToPointType"/>
+  <xs:element name="takeAWaitForChangesScreenshot" type="fromPointToPointType"/>
+
+  <!-- definition of complex elements -->
+  <xs:element name="screen">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="stepId"/>
+        <xs:element ref="name"/>
+        <xs:element ref="details"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="screenshotsToVerify">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="screen" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="testCaseSteps">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="step" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="testSuiteRefs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="externalFile" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="formalMetadata">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="title"/>
+        <xs:element ref="creator"/>
+        <xs:element ref="contributor" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="date"/>
+        <xs:element ref="status"/>
+        <xs:element ref="version"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="technologies">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="technicalSpec" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="test">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="description"/>
+        <xs:element ref="purpose"/>
+        <xs:element ref="preconditions" minOccurs="0" maxOccurs="1"/>
+        <xs:element ref="internalNotes" minOccurs="0" maxOccurs="1"/>
+        <xs:choice>
+          <xs:sequence>
+            <xs:element ref="testCaseSteps"/>
+            <xs:element ref="screenshotsToVerify" minOccurs="0" maxOccurs="1"/>
+          </xs:sequence>
+          <xs:element ref="testSuiteRefs"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- root element -->
+  <xs:element name="testDescription">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="formalMetadata"/>
+        <xs:element ref="technologies"/>
+        <xs:element ref="test"/>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
