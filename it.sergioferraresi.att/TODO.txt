@@ -2,15 +2,17 @@
 
 (+++++)	UI: add GNU GPL menu item in the About Menu
 (+++++)	reorganize classes and packages
-(+++++)	create a SharedResources class in it.sergioferraresi.att.resources and move icons/xsds here
 (++++)	log4j
+(++++)  property file implementation (http://www.mkyong.com/java/java-properties-file-examples/) with UI to change properties
 (++++)	implement the MVC architectural pattern
 (+++)	SWT UI implementation
-(++)	exec.sh: useful? to improve. make a exec.bat?
+(+++)   Clean Up & Format
+(+++)   create Strings file
+(++)	exec.sh: useful? to improve. create a exec.bat?
 (++)	att.jar: rename in "att_vYYYYmmdd_x_y_z"
-(++)	improve build.xml (relative paths)
 
 --------------------------------------------------------------------------------
+(+++++) 2015/03/27: create a SharedResources class in it.sergioferraresi.att.resources and move icons/xsds here
 (+++++)	2010/12/17: nuova idea per interfaccia TCB: vedi appunti al 17/12/2010
 (+++++)	2010/12/17: nuova idea per migliorare la registrazione/esecuzione dei test: vedi appunti al 20/12/2010
 (+++++)	2010/12/17: che messaggio esce se durante l'esecuzione del test si verifica un errore???
@@ -26,5 +28,6 @@
 (+++++)	2010/12/17: bisogna pulire la tabella dei results perché appende in coda se faccio altri test
 (+++)	2010/12/17: al primo avvio dell'ATT, potrebbe comparire una semi-finestra d'installazione che chiede dove salvare il programma
 (+++)	2010/12/17: una classe TestSuiteBuilder per conto suo
+(++)    2015/06/11: improve build.xml (relative paths)
 (++)	2010/12/17: script exec: controllo su modifica dei file class in modo da non doverli compilare sempre
 (++)	2010/12/17: script exec: permetti il passaggio di parametri al jar

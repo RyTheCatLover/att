@@ -4,7 +4,7 @@
  * 
  * ***************************************************************************
  * 
- * Copyright (C) 2010-2014  Sergio Ferraresi
+ * Copyright (C) 2010-2016  Sergio Ferraresi
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,10 +29,12 @@
  * Information about the file:
  * Filename         TestExecutor.java
  * Created on       2010-09-20
- * Last modified on 2014-12-09
+ * Last modified on 2016-02-11
  */
 package it.sergioferraresi.att;
 
+import it.sergioferraresi.att.model.Status;
+import it.sergioferraresi.att.model.XmlFileType;
 import it.sergioferraresi.att.ui.ResultsValidator;
 
 import java.awt.image.BufferedImage;
@@ -53,6 +55,9 @@ import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.stream.XMLOutputFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -95,13 +100,6 @@ public class TestExecutor {
      */
     private static UserActionSimulator simulator = new UserActionSimulator();
 
-
-
-    /**
-     * Not implemented.
-     */
-    private TestExecutor() {}
-
     /**
      * Returns the array that contains the path of the Report Files.
      * @return an ArrayList that contains the path of the Report Files.
@@ -117,15 +115,15 @@ public class TestExecutor {
      * @return an integer that identifies the exit status for the Test Case
      * execution. The accepted values are:
      * <ul>
-     *   <li><i>SystemManagement.PASS_EXIT_STATUS</i>, if the Test Case is
+     *   <li><i>SystemManagement.Status.PASS.exitCode()</i>, if the Test Case is
      *       executed and passed without errors;</li>
-     *   <li><i>SystemManagement.PENDING_EXIT_STATUS</i>, if the Test Case is
+     *   <li><i>SystemManagement.Status.PENDING.exitCode()</i>, if the Test Case is
      *       executed, but needs to validate the screenshots for the manual
      *       validation;</li>
-     *   <li><i>SystemManagement.FAIL_EXIT_STATUS</i>, if the Test Case is
+     *   <li><i>SystemManagement.Status.FAIL.exitCode()</i>, if the Test Case is
      *       executed and not passed: needs to validate the not equals
      *       screenshots for the automatic validation;</li>
-     *   <li><i>SystemManagement.ERROR_EXIT_STATUS</i>, if the Test Case is not
+     *   <li><i>SystemManagement.Status.ERROR.exitCode()</i>, if the Test Case is not
      *       executed. Error made by the Program.</li>
      * </ul>
      */
@@ -141,7 +139,7 @@ public class TestExecutor {
             if (!testFile.exists()) {
                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor) The XTD file \"" + testFile.getName() + "\" does not exist.");
                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_SEPARATOR_TYPE, null);
-                return SystemManagement.FAIL_EXIT_STATUS;
+                return Status.FAIL.exitCode();
             } else {
                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor) The XTD file \"" + testFile.getName() + "\" exists.");
                 // Is TC or TS?
@@ -156,7 +154,7 @@ public class TestExecutor {
                     }
                 } catch (IOException ee) {
                     SystemManagement.manageError(Boolean.FALSE, "(Test Executor) Is a \"Test Suite\" or \"Test Case\" file? " + ee.getMessage());
-                    return SystemManagement.ERROR_EXIT_STATUS;
+                    return Status.ERROR.exitCode();
                 }
                 if (ATTExecutableFile) {
                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor) The XTD file is an Automatic Testing Tool executable file.");
@@ -176,31 +174,31 @@ public class TestExecutor {
                              * file for the Test Suite and the folder of each 
                              * Test Case.
                              */
-                            String tmp1 = SystemManagement.getResultsWorkingFolder() + testFile.getName().substring(0, (testFile.getName().length() - SystemManagement.XTD_TYPE.length())) + File.separator;
+                            String tmp1 = SystemManagement.getResultsWorkingFolder() + testFile.getName().substring(0, (testFile.getName().length() - XmlFileType.XTD.extension().length())) + File.separator;
                             // Creates the folders for the Test Suite.
                             if (!SystemManagement.createFolder(tmp1)) {
                                 SystemManagement.manageError(Boolean.FALSE, "(Test Executor - " + testFile.getAbsolutePath() + ") Error while creating \"" + tmp1 + "\".");
-                                return SystemManagement.ERROR_EXIT_STATUS;
+                                return Status.ERROR.exitCode();
                             }
                             String tmp2 = tmp1 + SystemManagement.getCompactDate() + File.separator;
                             // Creates the folders for the Test Suite.
                             if (!SystemManagement.createFolder(tmp2)) {
                                 SystemManagement.manageError(Boolean.FALSE, "(Test Executor - " + testFile.getAbsolutePath() + ") Error while creating \"" + tmp2 + "\".");
-                                return SystemManagement.ERROR_EXIT_STATUS;
+                                return Status.ERROR.exitCode();
                             }
                             String tsTMPFolderPath = tmp2 + SystemManagement.getCompactHour() + File.separator;
                             // Creates the folders for the Test Suite.
                             if (!SystemManagement.createFolder(tsTMPFolderPath)) {
                                 SystemManagement.manageError(Boolean.FALSE, "(Test Executor - " + testFile.getAbsolutePath() + ") Error while creating \"" + tsTMPFolderPath + "\".");
-                                return SystemManagement.ERROR_EXIT_STATUS;
+                                return Status.ERROR.exitCode();
                             }
                             /*
                              * Creates the report file in the correct working
                              * folder. This file has the same name of the XTD
                              * file.
                              */
-                            SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testFile.getAbsolutePath() + ") Creating the results file named \"" + testFile.getName().substring(0, (testFile.getName().length() - SystemManagement.XTD_TYPE.length())) + ".xml\" in the \"" + tsTMPFolderPath + "\" folder.");
-                            SystemManagement.createXMLFile(tsTMPFolderPath, testFile.getName().substring(0, (testFile.getName().length() - SystemManagement.XTD_TYPE.length())), SystemManagement.XTR_TYPE);
+                            SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testFile.getAbsolutePath() + ") Creating the results file named \"" + testFile.getName().substring(0, (testFile.getName().length() - XmlFileType.XTD.extension().length())) + ".xml\" in the \"" + tsTMPFolderPath + "\" folder.");
+                            SystemManagement.createXMLFile(tsTMPFolderPath, testFile.getName().substring(0, (testFile.getName().length() - XmlFileType.XTD.extension().length())), XmlFileType.XTR);
                             Node rootNode = SystemManagement.createXMLNode("testsResultsDescription", null);
                             SystemManagement.appendXMLChildToXMLNode(null, rootNode);
                             SystemManagement.appendXMLAttributeToXMLNode(rootNode, SystemManagement.createXMLAttribute("xmlns:xs", "http://www.w3c.org/2001/XMLSchema"));
@@ -241,9 +239,9 @@ public class TestExecutor {
                             ArrayList<Node> tcNodes = new ArrayList<Node>();
                             //for (int j = 0; j < nodeList.getLength(); j++) {
                             int j = 0;
-                            int returnedValue = SystemManagement.PASS_EXIT_STATUS;
+                            int returnedValue = Status.PASS.exitCode();
                             long startTimeTS = Calendar.getInstance().getTimeInMillis();
-                            while ((j < nodeList.getLength()) && ((returnedValue == SystemManagement.PASS_EXIT_STATUS) || (returnedValue == SystemManagement.PENDING_EXIT_STATUS))) {
+                            while ((j < nodeList.getLength()) && ((returnedValue == Status.PASS.exitCode()) || (returnedValue == Status.PENDING.exitCode()))) {
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testFile.getAbsolutePath() + ") Started the execution of the Test Case: \"" + nodeList.item(j).getTextContent() + "\".");
 
                                 /*
@@ -256,7 +254,7 @@ public class TestExecutor {
                                 // Creates the folders for the Test Case.
                                 if (!SystemManagement.createFolder(screenshotsTCFolderPath)) {
                                     SystemManagement.manageError(Boolean.FALSE, "(Test Executor - " + nodeList.item(j).getTextContent() + ") Error while creating \"" + screenshotsTCFolderPath + "\".");
-                                    return SystemManagement.ERROR_EXIT_STATUS;
+                                    return Status.ERROR.exitCode();
                                 }
                                 String screenshotsTCStaticFolderPath = SystemManagement.getScreenshotsWorkingFolder() + nodeList.item(j).getTextContent().substring((nodeList.item(j).getTextContent().lastIndexOf(File.separator) + 1), nodeList.item(j).getTextContent().lastIndexOf('.')) + File.separator + "staticScreenshots" + File.separator;
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + nodeList.item(j).getTextContent() + ") Opening \"" + screenshotsTCStaticFolderPath + "\".");
@@ -264,13 +262,13 @@ public class TestExecutor {
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + nodeList.item(j).getTextContent() + ") Creating \"" + screenshotsTCTMPDateFolderPath + "\".");
                                 if (!SystemManagement.createFolder(screenshotsTCTMPDateFolderPath)) {
                                     SystemManagement.manageError(Boolean.FALSE, "(Test Executor - " + nodeList.item(j).getTextContent() + ") Error while creating \"" + screenshotsTCTMPDateFolderPath + "\".");
-                                    return SystemManagement.ERROR_EXIT_STATUS;
+                                    return Status.ERROR.exitCode();
                                 }
                                 String screenshotsTCTMPFolderPath = screenshotsTCTMPDateFolderPath + SystemManagement.getCompactHour() + File.separator;
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + nodeList.item(j).getTextContent() + ") Creating \"" + screenshotsTCTMPFolderPath + "\".");
                                 if (!SystemManagement.createFolder(screenshotsTCTMPFolderPath)) {
                                     SystemManagement.manageError(Boolean.FALSE, "(Test Executor - " + nodeList.item(j).getTextContent() + ") Error while creating \"" + screenshotsTCTMPFolderPath + "\".");
-                                    return SystemManagement.ERROR_EXIT_STATUS;
+                                    return Status.ERROR.exitCode();
                                 }
 
                                 // Executes the Test Case.
@@ -289,26 +287,26 @@ public class TestExecutor {
                                  */
                                 tcNodes.add(j, SystemManagement.createXMLNode("testCase", null));
                                 SystemManagement.appendXMLChildToXMLNode(tcNodes.get(j), SystemManagement.createXMLNode("name", nodeList.item(j).getTextContent()));
-                                if (returnedValue == SystemManagement.PASS_EXIT_STATUS) {
+                                if (returnedValue == Status.PASS.exitCode()) {
                                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + nodeList.item(j).getTextContent() + ") Finished the execution of: \"" + nodeList.item(j).getTextContent() + "\". The Test Case is PASSED.");
-                                    SystemManagement.appendXMLChildToXMLNode(tcNodes.get(j), SystemManagement.createXMLNode("status", SystemManagement.PASS_STATUS));
+                                    SystemManagement.appendXMLChildToXMLNode(tcNodes.get(j), SystemManagement.createXMLNode("status", Status.PASS.description()));
                                 }
-                                if (returnedValue == SystemManagement.PENDING_EXIT_STATUS) {
+                                if (returnedValue == Status.PENDING.exitCode()) {
                                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + nodeList.item(j).getTextContent() + ") Finished the execution of: \"" + nodeList.item(j).getTextContent() + "\". The Test Case is in a PENDING status: there are screenshots to check.");
-                                    SystemManagement.appendXMLChildToXMLNode(tcNodes.get(j), SystemManagement.createXMLNode("status", SystemManagement.PENDING_STATUS));
+                                    SystemManagement.appendXMLChildToXMLNode(tcNodes.get(j), SystemManagement.createXMLNode("status", Status.PENDING.description()));
                                     atLeastOneTCIsInPendingStatus = Boolean.TRUE;
                                     TestExecutor.testExecutorScreenshotsToCheck.clear();
                                 }
-                                if (returnedValue == SystemManagement.FAIL_EXIT_STATUS) {
+                                if (returnedValue == Status.FAIL.exitCode()) {
                                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + nodeList.item(j).getTextContent() + ") Interrupted the execution of: \"" + nodeList.item(j).getTextContent() + "\". The Test Case is NOT passed: probably, there are screenshots to check.");
-                                    SystemManagement.appendXMLChildToXMLNode(tcNodes.get(j), SystemManagement.createXMLNode("status", SystemManagement.FAIL_STATUS));
+                                    SystemManagement.appendXMLChildToXMLNode(tcNodes.get(j), SystemManagement.createXMLNode("status", Status.FAIL.description()));
                                     atLeastOneTCIsInFailStatus = Boolean.TRUE;
                                     isTSPassed = Boolean.FALSE;
                                     TestExecutor.testExecutorScreenshotsToCheck.clear();
                                 }
-                                if (returnedValue == SystemManagement.ERROR_EXIT_STATUS) {
+                                if (returnedValue == Status.ERROR.exitCode()) {
                                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + nodeList.item(j).getTextContent() + ") Interrupted the execution of: \"" + nodeList.item(j).getTextContent() + "\". Error while executing the Test Case.");
-                                    SystemManagement.appendXMLChildToXMLNode(tcNodes.get(j), SystemManagement.createXMLNode("status", SystemManagement.ERROR_STATUS));
+                                    SystemManagement.appendXMLChildToXMLNode(tcNodes.get(j), SystemManagement.createXMLNode("status", Status.ERROR.description()));
                                     atLeastOneTCIsInErrorStatus = Boolean.TRUE;
                                     isTSPassed = Boolean.FALSE;
                                     TestExecutor.testExecutorScreenshotsToCheck.clear();
@@ -325,31 +323,31 @@ public class TestExecutor {
                             dateFormatTS.setTimeZone(TimeZone.getTimeZone("GMT"));
                             long elapsedTS = currentTimeTS - startTimeTS;
                             // Appends the "status" Node to the Test Suite.
-                            int value = SystemManagement.ERROR_EXIT_STATUS;
+                            int value = Status.ERROR.exitCode();
                             if (isTSPassed && !atLeastOneTCIsInPendingStatus) {
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testFile.getAbsolutePath() + ") Finished the execution of: \"" + testFile.getName() + "\". The Test Suite is PASSED.");
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_SEPARATOR_TYPE, null);
-                                SystemManagement.appendXMLChildToXMLNode(tsNode, SystemManagement.createXMLNode("status", SystemManagement.PASS_STATUS));
-                                value = SystemManagement.PASS_EXIT_STATUS;
+                                SystemManagement.appendXMLChildToXMLNode(tsNode, SystemManagement.createXMLNode("status", Status.PASS.description()));
+                                value = Status.PASS.exitCode();
                             }
                             if (isTSPassed && atLeastOneTCIsInPendingStatus) {
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testFile.getAbsolutePath() + ") Finished the executio of: \"" + testFile.getName() + "\". The Test Suite is in a PENDING status: there are screenshots to check.");
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_SEPARATOR_TYPE, null);
-                                SystemManagement.appendXMLChildToXMLNode(tsNode, SystemManagement.createXMLNode("status", SystemManagement.PENDING_STATUS));
-                                value = SystemManagement.PENDING_EXIT_STATUS;
+                                SystemManagement.appendXMLChildToXMLNode(tsNode, SystemManagement.createXMLNode("status", Status.PENDING.description()));
+                                value = Status.PENDING.exitCode();
                                 thereIsAPending = Boolean.TRUE;
                             }
                             if (!isTSPassed && atLeastOneTCIsInFailStatus) {
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testFile.getAbsolutePath() + ") Finished the execution of: \"" + testFile.getName() + "\". The Test Suite is NOT passed: probably, there are screenshots to check.");
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_SEPARATOR_TYPE, null);
-                                SystemManagement.appendXMLChildToXMLNode(tsNode, SystemManagement.createXMLNode("status", SystemManagement.FAIL_STATUS));
-                                return SystemManagement.FAIL_EXIT_STATUS;
+                                SystemManagement.appendXMLChildToXMLNode(tsNode, SystemManagement.createXMLNode("status", Status.FAIL.description()));
+                                return Status.FAIL.exitCode();
                             }
                             if (!isTSPassed && atLeastOneTCIsInErrorStatus) {
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testFile.getAbsolutePath() + ") Finished the execution of: \"" + testFile.getName() + "\". Error while executing the Test Suite.");
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_SEPARATOR_TYPE, null);
-                                SystemManagement.appendXMLChildToXMLNode(tsNode, SystemManagement.createXMLNode("status", SystemManagement.ERROR_STATUS));
-                                return SystemManagement.ERROR_EXIT_STATUS;
+                                SystemManagement.appendXMLChildToXMLNode(tsNode, SystemManagement.createXMLNode("status", Status.ERROR.description()));
+                                return Status.ERROR.exitCode();
                             }
                             // Now appends the Test Cases to the Test Suite.
                             for (int k = 0; k < tcNodes.size(); k++)
@@ -375,7 +373,7 @@ public class TestExecutor {
                             // Creates the folders for the Test Case.
                             if (!SystemManagement.createFolder(screenshotsTCFolderPath)) {
                                 SystemManagement.manageError(Boolean.FALSE, "(Test Executor - " + testFilename + ") Error while creating \"" + screenshotsTCFolderPath + "\".");
-                                return SystemManagement.ERROR_EXIT_STATUS;
+                                return Status.ERROR.exitCode();
                             }
                             String screenshotsTCStaticFolderPath = SystemManagement.getScreenshotsWorkingFolder() + testFilename.substring((testFilename.lastIndexOf(File.separator) + 1), testFilename.lastIndexOf('.')) + File.separator + "staticScreenshots" + File.separator;
                             SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testFilename + ") Opening \"" + screenshotsTCStaticFolderPath + "\".");
@@ -383,13 +381,13 @@ public class TestExecutor {
                             SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testFilename + ") Creating \"" + screenshotsTCTMPDateFolderPath + "\".");
                             if (!SystemManagement.createFolder(screenshotsTCTMPDateFolderPath)) {
                                 SystemManagement.manageError(Boolean.FALSE, "(Test Executor - " + testFilename + ") Error while creating \"" + screenshotsTCTMPDateFolderPath + "\".");
-                                return SystemManagement.ERROR_EXIT_STATUS;
+                                return Status.ERROR.exitCode();
                             }
                             String screenshotsTCTMPFolderPath = screenshotsTCTMPDateFolderPath + SystemManagement.getCompactHour() + File.separator;
                             SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testFilename + ") Creating \"" + screenshotsTCTMPFolderPath + "\".");
                             if (!SystemManagement.createFolder(screenshotsTCTMPFolderPath)) {
                                 SystemManagement.manageError(Boolean.FALSE, "(Test Executor - " + testFilename + ") Error while creating \"" + screenshotsTCTMPFolderPath + "\".");
-                                return SystemManagement.ERROR_EXIT_STATUS;
+                                return Status.ERROR.exitCode();
                             }
 
                             /*
@@ -397,8 +395,8 @@ public class TestExecutor {
                              * folder. This file has the same name of the XTD
                              * file.
                              */
-                            SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor) Creating the report file named \"" + testFile.getName().substring(0, (testFile.getName().length() - SystemManagement.XTD_TYPE.length())) + ".xml\" in the \"" + screenshotsTCTMPFolderPath + "\" folder.");
-                            SystemManagement.createXMLFile(screenshotsTCTMPFolderPath, testFile.getName().substring(0, (testFile.getName().length() - SystemManagement.XTD_TYPE.length())), SystemManagement.XTR_TYPE);
+                            SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor) Creating the report file named \"" + testFile.getName().substring(0, (testFile.getName().length() - XmlFileType.XTD.extension().length())) + ".xml\" in the \"" + screenshotsTCTMPFolderPath + "\" folder.");
+                            SystemManagement.createXMLFile(screenshotsTCTMPFolderPath, testFile.getName().substring(0, (testFile.getName().length() - XmlFileType.XTD.extension().length())), XmlFileType.XTR);
                             Node rootNode = SystemManagement.createXMLNode("testsResultsDescription", null);
                             SystemManagement.appendXMLChildToXMLNode(null, rootNode);
                             SystemManagement.appendXMLAttributeToXMLNode(rootNode, SystemManagement.createXMLAttribute("xmlns:xs", "http://www.w3c.org/2001/XMLSchema"));
@@ -435,24 +433,24 @@ public class TestExecutor {
                             Node tcNode = SystemManagement.createXMLNode("testCase", null);
                             SystemManagement.appendXMLChildToXMLNode(rootNode, tcNode);
                             SystemManagement.appendXMLChildToXMLNode(tcNode, SystemManagement.createXMLNode("name", testFilename));
-                            if (returnedValue == SystemManagement.PASS_EXIT_STATUS) {
+                            if (returnedValue == Status.PASS.exitCode()) {
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor) Finished the execution of: \"" + testFilename + "\". Test Case PASSED.");
-                                SystemManagement.appendXMLChildToXMLNode(tcNode, SystemManagement.createXMLNode("status", SystemManagement.PASS_STATUS));
+                                SystemManagement.appendXMLChildToXMLNode(tcNode, SystemManagement.createXMLNode("status", Status.PASS.description()));
                             }
-                            if (returnedValue == SystemManagement.PENDING_EXIT_STATUS) {
+                            if (returnedValue == Status.PENDING.exitCode()) {
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor) Finished the execution of: \"" + testFilename + "\". Test Case is in PENDING status: there are screenshots to check.");
-                                SystemManagement.appendXMLChildToXMLNode(tcNode, SystemManagement.createXMLNode("status", SystemManagement.PENDING_STATUS));
+                                SystemManagement.appendXMLChildToXMLNode(tcNode, SystemManagement.createXMLNode("status", Status.PENDING.description()));
                                 TestExecutor.testExecutorScreenshotsToCheck.clear();
                                 thereIsAPending = Boolean.TRUE;
                             }
-                            if (returnedValue == SystemManagement.FAIL_EXIT_STATUS) {
+                            if (returnedValue == Status.FAIL.exitCode()) {
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor) Interrupted the execution of: \"" + testFilename + "\". Test Case NOT passed.");
-                                SystemManagement.appendXMLChildToXMLNode(tcNode, SystemManagement.createXMLNode("status", SystemManagement.FAIL_STATUS));
+                                SystemManagement.appendXMLChildToXMLNode(tcNode, SystemManagement.createXMLNode("status", Status.FAIL.description()));
                                 TestExecutor.testExecutorScreenshotsToCheck.clear();
                             }
-                            if (returnedValue == SystemManagement.ERROR_EXIT_STATUS) {
+                            if (returnedValue == Status.ERROR.exitCode()) {
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor) Interrupted the execution of: \"" + testFilename + "\". Test Case NOT passed.");
-                                SystemManagement.appendXMLChildToXMLNode(tcNode, SystemManagement.createXMLNode("status", SystemManagement.ERROR_STATUS));
+                                SystemManagement.appendXMLChildToXMLNode(tcNode, SystemManagement.createXMLNode("status", Status.ERROR.description()));
                                 TestExecutor.testExecutorScreenshotsToCheck.clear();
                             }
                             if (TestExecutor.screenshotsToVerifyNode != null)
@@ -468,13 +466,13 @@ public class TestExecutor {
                         }
                     } catch (ParserConfigurationException ee) {
                         SystemManagement.manageError(Boolean.FALSE, "(Test Executor) Is a \"Test Suite\" or \"Test Case\" file? " + ee.getMessage());
-                        return SystemManagement.ERROR_EXIT_STATUS;
+                        return Status.ERROR.exitCode();
                     } catch (SAXException ee) {
                         SystemManagement.manageError(Boolean.FALSE, "(Test Executor) Is a \"Test Suite\" or \"Test Case\" file? " + ee.getMessage());
-                        return SystemManagement.ERROR_EXIT_STATUS;
+                        return Status.ERROR.exitCode();
                     } catch (IOException ee) {
                         SystemManagement.manageError(Boolean.FALSE, "(Test Executor) Is a \"Test Suite\" or \"Test Case\" file? " + ee.getMessage());
-                        return SystemManagement.ERROR_EXIT_STATUS;
+                        return Status.ERROR.exitCode();
                     }
                 } else {
                     /*
@@ -486,7 +484,7 @@ public class TestExecutor {
                     // Creates the folders for the Test Case.
                     if (!SystemManagement.createFolder(screenshotsTCFolderPath)) {
                         SystemManagement.manageError(Boolean.FALSE, "(Test Executor - " + testFilename + ") Error while creating \"" + screenshotsTCFolderPath + "\".");
-                        return SystemManagement.ERROR_EXIT_STATUS;
+                        return Status.ERROR.exitCode();
                     }
                     String screenshotsTCStaticFolderPath = SystemManagement.getScreenshotsWorkingFolder() + testFilename.substring((testFilename.lastIndexOf(File.separator) + 1), testFilename.lastIndexOf('.')) + File.separator + "staticScreenshots" + File.separator;
                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testFilename + ") Opening \"" + screenshotsTCStaticFolderPath + "\".");
@@ -494,13 +492,13 @@ public class TestExecutor {
                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testFilename + ") Creating \"" + screenshotsTCTMPDateFolderPath + "\".");
                     if (!SystemManagement.createFolder(screenshotsTCTMPDateFolderPath)) {
                         SystemManagement.manageError(Boolean.FALSE, "(Test Executor - " + testFilename + ") Error while creating \"" + screenshotsTCTMPDateFolderPath + "\".");
-                        return SystemManagement.ERROR_EXIT_STATUS;
+                        return Status.ERROR.exitCode();
                     }
                     String screenshotsTCTMPFolderPath = screenshotsTCTMPDateFolderPath + SystemManagement.getCompactHour() + File.separator;
                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testFilename + ") Creating \"" + screenshotsTCTMPFolderPath + "\".");
                     if (!SystemManagement.createFolder(screenshotsTCTMPFolderPath)) {
                         SystemManagement.manageError(Boolean.FALSE, "(Test Executor - " + testFilename + ") Error while creating \"" + screenshotsTCTMPFolderPath + "\".");
-                        return SystemManagement.ERROR_EXIT_STATUS;
+                        return Status.ERROR.exitCode();
                     }
 
                     /*
@@ -509,8 +507,8 @@ public class TestExecutor {
                      * The report file is created here because we need to insert
                      * also the "not-ATT-executable-files" as fail Test Cases.
                      */
-                    SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor) Creating the report file named \"" + testFile.getName().substring(0, (testFile.getName().length() - SystemManagement.XTD_TYPE.length())) + ".xml\" in the \"" + screenshotsTCTMPFolderPath + "\" folder.");
-                    SystemManagement.createXMLFile(screenshotsTCTMPFolderPath, testFile.getName().substring(0, (testFile.getName().length() - SystemManagement.XTD_TYPE.length())), SystemManagement.XTR_TYPE);
+                    SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor) Creating the report file named \"" + testFile.getName().substring(0, (testFile.getName().length() - XmlFileType.XTD.extension().length())) + ".xml\" in the \"" + screenshotsTCTMPFolderPath + "\" folder.");
+                    SystemManagement.createXMLFile(screenshotsTCTMPFolderPath, testFile.getName().substring(0, (testFile.getName().length() - XmlFileType.XTD.extension().length())), XmlFileType.XTR);
                     Node rootNode = SystemManagement.createXMLNode("testsResultsDescription", null);
                     SystemManagement.appendXMLChildToXMLNode(null, rootNode);
                     SystemManagement.appendXMLAttributeToXMLNode(rootNode, SystemManagement.createXMLAttribute("xmlns:xs", "http://www.w3c.org/2001/XMLSchema"));
@@ -520,7 +518,7 @@ public class TestExecutor {
                     Node tcNode = SystemManagement.createXMLNode("testCase", null);
                     SystemManagement.appendXMLChildToXMLNode(rootNode, tcNode);
                     SystemManagement.appendXMLChildToXMLNode(tcNode, SystemManagement.createXMLNode("name", testFilename));
-                    SystemManagement.appendXMLChildToXMLNode(tcNode, SystemManagement.createXMLNode("status", SystemManagement.FAIL_STATUS));
+                    SystemManagement.appendXMLChildToXMLNode(tcNode, SystemManagement.createXMLNode("status", Status.FAIL.description()));
                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor) The XTD file \"" + testFile.getName() + "\" is not an ATT Executable File: NOT passed.");
                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_SEPARATOR_TYPE, null);
                     // Appends the elapsedTime node.
@@ -542,16 +540,16 @@ public class TestExecutor {
                         bw.close();
                     } catch (IOException ee) {
                         SystemManagement.manageError(Boolean.FALSE, "(Test Executor) Error while creating the info file for the Test Case. " + ee.getMessage());
-                        return SystemManagement.ERROR_EXIT_STATUS;
+                        return Status.ERROR.exitCode();
                     }
-                    return SystemManagement.FAIL_EXIT_STATUS;
+                    return Status.FAIL.exitCode();
                 }
             }
         }
         if (thereIsAPending)
-            return SystemManagement.PENDING_EXIT_STATUS;
+            return Status.PENDING.exitCode();
         else
-            return SystemManagement.PASS_EXIT_STATUS;
+            return Status.PASS.exitCode();
     }
 
     /**
@@ -565,15 +563,15 @@ public class TestExecutor {
      * @return an integer that identifies the exit status for the Test Case
      * execution. The accepted values are:
      * <ul>
-     *   <li><i>SystemManagement.PASS_EXIT_STATUS</i>, if the Test Case is
+     *   <li><i>SystemManagement.Status.PASS.exitCode()</i>, if the Test Case is
      *       executed and passed without errors;</li>
-     *   <li><i>SystemManagement.PENDING_EXIT_STATUS</i>, if the Test Case is 
+     *   <li><i>SystemManagement.Status.PENDING.exitCode()</i>, if the Test Case is 
      *       executed, but needs to validate the screenshots for the manual
      *       validation;</li>
-     *   <li><i>SystemManagement.FAIL_EXIT_STATUS</i>, if the Test Case is
+     *   <li><i>SystemManagement.Status.FAIL.exitCode()</i>, if the Test Case is
      *       executed and not passed: needs to validate the not equals
      *       screenshots for the automatic validation;</li>
-     *   <li><i>SystemManagement.ERROR_EXIT_STATUS</i>, if the Test Case is not
+     *   <li><i>SystemManagement.Status.ERROR.exitCode()</i>, if the Test Case is not
      *       executed. Error made by the Program.</li>
      * </ul>
      */
@@ -655,24 +653,24 @@ public class TestExecutor {
                 }
             }
             if (!commandWithError && TestExecutor.testExecutorScreenshotsToCheck.isEmpty() && (screenNodes.getLength() == 0))
-                return SystemManagement.PASS_EXIT_STATUS;
+                return Status.PASS.exitCode();
             if (!commandWithError && TestExecutor.testExecutorScreenshotsToCheck.isEmpty() && (screenNodes.getLength() != 0))
-                return SystemManagement.PENDING_EXIT_STATUS;
+                return Status.PENDING.exitCode();
             if (!commandWithError && !TestExecutor.testExecutorScreenshotsToCheck.isEmpty())
-                return SystemManagement.FAIL_EXIT_STATUS;
+                return Status.FAIL.exitCode();
             if (commandWithError)
-                return SystemManagement.ERROR_EXIT_STATUS;
+                return Status.ERROR.exitCode();
         } catch (ParserConfigurationException ee) {
             SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testCaseFilename + ") Error while parsing the XTD file: " + ee.getMessage());
-            return SystemManagement.ERROR_EXIT_STATUS;
+            return Status.ERROR.exitCode();
         } catch (SAXException ee) {
             SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testCaseFilename + ") Error while parsing the XTD file: " + ee.getMessage());
-            return SystemManagement.ERROR_EXIT_STATUS;
+            return Status.ERROR.exitCode();
         } catch (IOException ee) {
             SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Executor - " + testCaseFilename + ") Error while parsing the XTD file: " + ee.getMessage());
-            return SystemManagement.ERROR_EXIT_STATUS;
+            return Status.ERROR.exitCode();
         }
-        return SystemManagement.ERROR_EXIT_STATUS;
+        return Status.ERROR.exitCode();
     }
 
     /**
@@ -738,13 +736,13 @@ public class TestExecutor {
         // If command is equals to the "startApplication" ATT's command...
         if (commandName.equals("startApplication")) {
             String[] cmd = null;
-            if (SystemManagement.getOSName().contains("Linux") == Boolean.TRUE) {
+            if (SystemManagement.IS_OS_LINUX) {
                 cmd = new String[3];
                 cmd[0] = "/bin/sh";
                 cmd[1] = "-c";
                 cmd[2] = commandValue;
             }
-            if (SystemManagement.getOSName().contains("Windows") == Boolean.TRUE) {
+            if (SystemManagement.IS_OS_WINDOWS) {
                 cmd = new String[5];
                 cmd[0] = "cmd";
                 cmd[1] = "/c";

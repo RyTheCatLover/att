@@ -4,7 +4,7 @@
  * 
  * ***************************************************************************
  * 
- * Copyright (C) 2010-2014  Sergio Ferraresi
+ * Copyright (C) 2010-2016  Sergio Ferraresi
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
  * Information about the file:
  * Filename         UserActionSimulator.java
  * Created on       2010-07-29
- * Last modified on 2014-12-09
+ * Last modified on 2016-02-11
  */
 
 package it.sergioferraresi.att;
@@ -235,9 +235,9 @@ public class UserActionSimulator {
             if (Character.isSpaceChar(character))
                 keyCodes.add(KeyEvent.VK_SPACE);
             else if (Character.isLetter(character)) {
-                if (SystemManagement.getOSName().contains("Windows"))
+                if (SystemManagement.IS_OS_WINDOWS)
                     isAltActivated = Boolean.TRUE;
-                if (SystemManagement.getOSName().contains("Linux")) {
+                if (SystemManagement.IS_OS_LINUX) {
                     this.robot.keyPress(KeyEvent.VK_CONTROL);
                     this.robot.keyPress(KeyEvent.VK_SHIFT);
                     this.robot.keyPress(KeyEvent.VK_U);
@@ -245,7 +245,7 @@ public class UserActionSimulator {
                     isControlActivated = Boolean.TRUE;
                     isShiftActivated = Boolean.TRUE;
                 }
-                if (SystemManagement.getOSName().contains("Windows")) {
+                if (SystemManagement.IS_OS_WINDOWS) {
                     String intValue = String.valueOf((int)character);
                     for (int j = 0; j < intValue.length(); j++) {
                         char tmp = intValue.charAt(j);
@@ -293,7 +293,7 @@ public class UserActionSimulator {
                         }
                     }
                 }
-                if (SystemManagement.getOSName().contains("Linux")) {
+                if (SystemManagement.IS_OS_LINUX) {
                     String hexValue = Integer.toHexString((int)character);
                     for (int j = 0; j < hexValue.length(); j++) {
                         if (Character.isDigit(hexValue.charAt(j)))
@@ -305,9 +305,9 @@ public class UserActionSimulator {
             } else if (Character.isDigit(character))
                 keyCodes.add((int)character);
             else {
-                if (SystemManagement.getOSName().contains("Windows"))
+                if (SystemManagement.IS_OS_WINDOWS)
                     isAltActivated = Boolean.TRUE;
-                if (SystemManagement.getOSName().contains("Linux")) {
+                if (SystemManagement.IS_OS_LINUX) {
                     this.robot.keyPress(KeyEvent.VK_CONTROL);
                     this.robot.keyPress(KeyEvent.VK_SHIFT);
                     this.robot.keyPress(KeyEvent.VK_U);
@@ -317,379 +317,379 @@ public class UserActionSimulator {
                 }
                 switch(character) {
                     case '!': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD3);
                             keyCodes.add(KeyEvent.VK_NUMPAD3);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_1);
                         }
                         break;
                     }
                     case '"': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD3);
                             keyCodes.add(KeyEvent.VK_NUMPAD4);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_2);
                         }
                         break;
                     }
                     case '#': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD3);
                             keyCodes.add(KeyEvent.VK_NUMPAD5);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_3);
                         }
                         break;
                     }
                     case '$': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD3);
                             keyCodes.add(KeyEvent.VK_NUMPAD6);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_4);
                         }
                         break;
                     }
                     case '%': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD3);
                             keyCodes.add(KeyEvent.VK_NUMPAD7);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_5);
                         }
                         break;
                     }
                     case '&': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD3);
                             keyCodes.add(KeyEvent.VK_NUMPAD8);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_6);
                         }
                         break;
                     }
                     case '\'': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD3);
                             keyCodes.add(KeyEvent.VK_NUMPAD9);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_7);
                         }
                         break;
                     }
                     case '(': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD4);
                             keyCodes.add(KeyEvent.VK_NUMPAD0);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_8);
                         }
                         break;
                     }
                     case ')': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD4);
                             keyCodes.add(KeyEvent.VK_NUMPAD1);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_9);
                         }
                         break;
                     }
                     case '*': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD4);
                             keyCodes.add(KeyEvent.VK_NUMPAD2);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_A);
                         }
                         break;
                     }
                     case '+': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD4);
                             keyCodes.add(KeyEvent.VK_NUMPAD3);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_B);
                         }
                         break;
                     }
                     case ',': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD4);
                             keyCodes.add(KeyEvent.VK_NUMPAD4);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_C);
                         }
                         break;
                     }
                     case '-': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD4);
                             keyCodes.add(KeyEvent.VK_NUMPAD5);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_D);
                         }
                         break;
                     }
                     case '.': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD4);
                             keyCodes.add(KeyEvent.VK_NUMPAD6);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_E);
                         }
                         break;
                     }
                     case '/': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD4);
                             keyCodes.add(KeyEvent.VK_NUMPAD7);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_2);
                             keyCodes.add(KeyEvent.VK_F);
                         }
                         break;
                     }
                     case ':': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD5);
                             keyCodes.add(KeyEvent.VK_NUMPAD8);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_3);
                             keyCodes.add(KeyEvent.VK_A);
                         }
                         break;
                     }
                     case ';': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD5);
                             keyCodes.add(KeyEvent.VK_NUMPAD9);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_3);
                             keyCodes.add(KeyEvent.VK_B);
                         }
                         break;
                     }
                     case '<': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD6);
                             keyCodes.add(KeyEvent.VK_NUMPAD0);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_3);
                             keyCodes.add(KeyEvent.VK_C);
                         }
                         break;
                     }
                     case '=': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD6);
                             keyCodes.add(KeyEvent.VK_NUMPAD1);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_3);
                             keyCodes.add(KeyEvent.VK_D);
                         }
                         break;
                     }
                     case '>': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD6);
                             keyCodes.add(KeyEvent.VK_NUMPAD2);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_3);
                             keyCodes.add(KeyEvent.VK_E);
                         }
                         break;
                     }
                     case '?': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD6);
                             keyCodes.add(KeyEvent.VK_NUMPAD3);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_3);
                             keyCodes.add(KeyEvent.VK_F);
                         }
                         break;
                     }
                     case '@': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD6);
                             keyCodes.add(KeyEvent.VK_NUMPAD4);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_4);
                             keyCodes.add(KeyEvent.VK_0);
                         }
                         break;
                     }
                     case '[': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD9);
                             keyCodes.add(KeyEvent.VK_NUMPAD1);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_5);
                             keyCodes.add(KeyEvent.VK_B);
                         }
                         break;
                     }
                     case '\\': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD9);
                             keyCodes.add(KeyEvent.VK_NUMPAD2);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_5);
                             keyCodes.add(KeyEvent.VK_C);
                         }
                         break;
                     }
                     case ']': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD9);
                             keyCodes.add(KeyEvent.VK_NUMPAD3);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_5);
                             keyCodes.add(KeyEvent.VK_D);
                         }
                         break;
                     }
                     case '^': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD9);
                             keyCodes.add(KeyEvent.VK_NUMPAD4);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_5);
                             keyCodes.add(KeyEvent.VK_E);
                         }
                         break;
                     }
                     case '_': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD9);
                             keyCodes.add(KeyEvent.VK_NUMPAD5);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_5);
                             keyCodes.add(KeyEvent.VK_F);
                         }
                         break;
                     }
                     case '`': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD9);
                             keyCodes.add(KeyEvent.VK_NUMPAD6);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_6);
                             keyCodes.add(KeyEvent.VK_0);
                         }
                         break;
                     }
                     case '{': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD1);
                             keyCodes.add(KeyEvent.VK_NUMPAD2);
                             keyCodes.add(KeyEvent.VK_NUMPAD3);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_7);
                             keyCodes.add(KeyEvent.VK_B);
                         }
                         break;
                     }
                     case '|': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD1);
                             keyCodes.add(KeyEvent.VK_NUMPAD2);
                             keyCodes.add(KeyEvent.VK_NUMPAD4);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_7);
                             keyCodes.add(KeyEvent.VK_C);
                         }
                         break;
                     }
                     case '}': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD1);
                             keyCodes.add(KeyEvent.VK_NUMPAD2);
                             keyCodes.add(KeyEvent.VK_NUMPAD5);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_7);
                             keyCodes.add(KeyEvent.VK_D);
                         }
                         break;
                     }
                     case '~': {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD1);
                             keyCodes.add(KeyEvent.VK_NUMPAD2);
                             keyCodes.add(KeyEvent.VK_NUMPAD6);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_7);
                             keyCodes.add(KeyEvent.VK_E);
                         }
                         break;
                     }
 //                    case '£': { TODO
-//                        if (SystemManagement.getOSName().contains("Windows")) {
+//                        if (SystemManagement.IS_OS_WINDOWS) {
 //                            keyCodes.add(KeyEvent.VK_NUMPAD1);
 //                            keyCodes.add(KeyEvent.VK_NUMPAD5);
 //                            keyCodes.add(KeyEvent.VK_NUMPAD6);
 //                        }
-//                        if (SystemManagement.getOSName().contains("Linux")) {
+//                        if (SystemManagement.IS_OS_LINUX) {
 //                            keyCodes.add(KeyEvent.VK_9);
 //                            keyCodes.add(KeyEvent.VK_C);
 //                        }
 //                        break;
 //                    }
                     default: {
-                        if (SystemManagement.getOSName().contains("Windows")) {
+                        if (SystemManagement.IS_OS_WINDOWS) {
                             keyCodes.add(KeyEvent.VK_NUMPAD6);
                             keyCodes.add(KeyEvent.VK_NUMPAD3);
                         }
-                        if (SystemManagement.getOSName().contains("Linux")) {
+                        if (SystemManagement.IS_OS_LINUX) {
                             keyCodes.add(KeyEvent.VK_3);
                             keyCodes.add(KeyEvent.VK_F);
                         }

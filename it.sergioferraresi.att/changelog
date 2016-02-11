@@ -1,4 +1,34 @@
-2014-12-14	psf563	<dev@sergioferraresi@it>
+2015-06-23  psf563  <dev@sergioferraresi.it>
+
+    * SystemManagement.java: tested config.properties file for application 
+      paths;
+
+2015-06-23  psf563  <dev@sergioferraresi.it>
+
+    * SystemManagement.java: removed getOSxxx() methods; OS_xxx variabile are 
+      now public constants; moved some attributes to the *.model package as a
+      enums; created static attributes: IS_OS_LINUX, IS_OS_WINDOWS and
+      IS_OS_WINDOWS_XP; 
+
+2015-06-11  psf563  <dev@sergioferraresi.it>
+
+    * improved build.xml
+    * copyright update
+
+-------------------------------------------------------------------------------
+
+2015-03-27  psf563  <dev@sergioferraresi.it>
+
+    * added the META-INF/MANIFEST.MF file
+    * added the ResourcesManager.java file
+    * moved the images from the it.sergioferraresi.att.resources.icon package 
+      to the imgs folder
+    * moved the xsds from the it.sergioferraresi.att.resources.xsd package to 
+      the xsds folder
+
+-------------------------------------------------------------------------------
+
+2014-12-14	psf563	<dev@sergioferraresi.it>
 
 	* moved the project from NetBeans to Eclipse (actual release Eclipse 
 	  Luna 4.4.1, build id 20140925-1800):

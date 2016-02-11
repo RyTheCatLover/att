@@ -4,7 +4,7 @@
  * 
  * ***************************************************************************
  * 
- * Copyright (C) 2010-2014  Sergio Ferraresi
+ * Copyright (C) 2010-2016  Sergio Ferraresi
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
  * Information about the file:
  * Filename         Main.java
  * Created on       2010-07-29
- * Last modified on 2014-12-09
+ * Last modified on 2016-02-11
  */
 package it.sergioferraresi.att;
 
@@ -47,10 +47,6 @@ import it.sergioferraresi.att.ui.WindowManager;
  * @version 1.0 (release 20101209fr)
  */
 public class Main {
-    /**
-     * Not implemented.
-     */
-    private Main() {}
 
     /**
      * Starts the main program.

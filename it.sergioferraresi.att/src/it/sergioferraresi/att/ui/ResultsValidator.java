@@ -4,7 +4,7 @@
  * 
  * ***************************************************************************
  * 
- * Copyright (C) 2010-2014  Sergio Ferraresi
+ * Copyright (C) 2010-2016  Sergio Ferraresi
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,11 +29,13 @@
  * Information about the file:
  * Filename         ResultsValidator.java
  * Created on       2010-09-30
- * Last modified on 2014-12-09
+ * Last modified on 2016-02-11
  */
 package it.sergioferraresi.att.ui;
 
 import it.sergioferraresi.att.SystemManagement;
+import it.sergioferraresi.att.model.Status;
+import it.sergioferraresi.att.model.XmlFileType;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -157,7 +159,7 @@ public class ResultsValidator extends JPanel implements MouseListener {
                 SystemManagement.manageError(Boolean.TRUE, "(Results Validator) Error while opening the info file for the Test Case: " + e.getMessage());
             }
             // Gets the name of the file to open.
-            this.resultsFile = new File(infoFilePath + tsName + SystemManagement.XTR_TYPE);
+            this.resultsFile = new File(infoFilePath + tsName + XmlFileType.XTR.extension());
             this.testCaseName = tcName;
             this.isTS = Boolean.TRUE;
         }
@@ -174,7 +176,7 @@ public class ResultsValidator extends JPanel implements MouseListener {
                 SystemManagement.manageError(Boolean.TRUE, "(Results Validator) Error while opening the info file for the Test Case: " + e.getMessage());
             }
             // Gets the name of the file to open.
-            this.resultsFile = new File(infoFilePath + tcName + SystemManagement.XTR_TYPE);
+            this.resultsFile = new File(infoFilePath + tcName + XmlFileType.XTR.extension());
             this.testCaseName = null;
             this.isTS = Boolean.FALSE;
         }
@@ -186,7 +188,7 @@ public class ResultsValidator extends JPanel implements MouseListener {
            this.resultsFile = new File(tsName);
            this.testCaseName = tcName;
            this.isTS = Boolean.TRUE;
-           JOptionPane.showMessageDialog(WindowManager.getResultsValidatorFrame(), "<html><head></head><body><p>Test Suite Name: " + this.resultsFile.getName() + "<br/>Test Case Name: " + tcName + SystemManagement.XTR_TYPE + "</p></body></html>", "Results Validator - Test Suite Information", JOptionPane.INFORMATION_MESSAGE);
+           JOptionPane.showMessageDialog(WindowManager.getResultsValidatorFrame(), "<html><head></head><body><p>Test Suite Name: " + this.resultsFile.getName() + "<br/>Test Case Name: " + tcName + XmlFileType.XTR.extension() + "</p></body></html>", "Results Validator - Test Suite Information", JOptionPane.INFORMATION_MESSAGE);
         }
         if ((tsName == null) && tcName.contains("results")) {
            this.resultsFile = new File(tcName);
@@ -208,8 +210,8 @@ public class ResultsValidator extends JPanel implements MouseListener {
                  * status will not change.
                  */
                 NodeList statusNodes = doc.getElementsByTagName("status");
-                if (statusNodes.item(0).getChildNodes().item(0).getNodeValue().equals(SystemManagement.ERROR_STATUS)) {
-                    JOptionPane.showMessageDialog(WindowManager.getResultsValidatorFrame(), "<html><head></head><body><p>The Test Suite has the \"" + SystemManagement.ERROR_STATUS + "\" status but it has screenshots to verify. At the end of the validation, the status of the Test Suite will NOT change.</p></body></html>", "Results Validator - Test Suite Information", JOptionPane.INFORMATION_MESSAGE);
+                if (statusNodes.item(0).getChildNodes().item(0).getNodeValue().equals(Status.ERROR.description())) {
+                    JOptionPane.showMessageDialog(WindowManager.getResultsValidatorFrame(), "<html><head></head><body><p>The Test Suite has the \"" + Status.ERROR.description() + "\" status but it has screenshots to verify. At the end of the validation, the status of the Test Suite will NOT change.</p></body></html>", "Results Validator - Test Suite Information", JOptionPane.INFORMATION_MESSAGE);
                     this.isErrorStatus = Boolean.TRUE;
                 }
                 // Gets the screenshot nodes.
@@ -266,8 +268,8 @@ public class ResultsValidator extends JPanel implements MouseListener {
                  * status will not change.
                  */
                 NodeList statusNodes = doc.getElementsByTagName("status");
-                if (statusNodes.item(0).getChildNodes().item(0).getNodeValue().equals(SystemManagement.ERROR_STATUS)) {
-                    JOptionPane.showMessageDialog(WindowManager.getResultsValidatorFrame(), "<html><head></head><body><p>The Test Case has the \"" + SystemManagement.ERROR_STATUS + "\" status but it has screenshots to verify. At the end of the validation, the status of the Test Case will NOT change.</p></body></html>", "Results Validator - Test Case Information", JOptionPane.INFORMATION_MESSAGE);
+                if (statusNodes.item(0).getChildNodes().item(0).getNodeValue().equals(Status.ERROR.description())) {
+                    JOptionPane.showMessageDialog(WindowManager.getResultsValidatorFrame(), "<html><head></head><body><p>The Test Case has the \"" + Status.ERROR.description() + "\" status but it has screenshots to verify. At the end of the validation, the status of the Test Case will NOT change.</p></body></html>", "Results Validator - Test Case Information", JOptionPane.INFORMATION_MESSAGE);
                     this.isErrorStatus = Boolean.TRUE;
                 }
                 // Gets the screenshot nodes.
@@ -489,16 +491,16 @@ public class ResultsValidator extends JPanel implements MouseListener {
          * change it.
          */
         if (this.isErrorStatus == Boolean.TRUE) {
-            JOptionPane.showMessageDialog(WindowManager.getResultsValidatorFrame(), "Because of the status of the test is equals to \"" + SystemManagement.ERROR_STATUS + "\", it will not change.", "Results Validator", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(WindowManager.getResultsValidatorFrame(), "Because of the status of the test is equals to \"" + Status.ERROR.description() + "\", it will not change.", "Results Validator", JOptionPane.INFORMATION_MESSAGE);
         } else {
             // What is the new status?
-            String newStatus = SystemManagement.PASS_STATUS;
+            String newStatus = Status.PASS.description();
             for (int i = 0; i < this.sdArray.size(); i++) {
                 if (!this.sdArray.get(i).getScreenshotOnRevision().equals(ResultsValidator.ACCEPTED_STATUS)) {
                     if (this.sdArray.get(i).getScreenshotOnRevision().equals(ResultsValidator.PENDING_STATUS))
-                        newStatus = SystemManagement.PENDING_STATUS;
+                        newStatus = Status.PENDING.description();
                     else
-                        newStatus = SystemManagement.FAIL_STATUS;
+                        newStatus = Status.FAIL.description();
                     break;
                 }
             }
@@ -526,14 +528,14 @@ public class ResultsValidator extends JPanel implements MouseListener {
                      */
                     NodeList statusNodes = doc.getElementsByTagName("status");
                     Node tsStatusNode = statusNodes.item(0).getChildNodes().item(0);
-                    String tsNewStatus = SystemManagement.PASS_STATUS;
+                    String tsNewStatus = Status.PASS.description();
                     for (int i = 1; i < statusNodes.getLength(); i++) {
                         String thisStatusValue = statusNodes.item(i).getChildNodes().item(0).getNodeValue();
                         if (!thisStatusValue.equals(ResultsValidator.ACCEPTED_STATUS)) {
                             if (thisStatusValue.equals(ResultsValidator.PENDING_STATUS))
-                                tsNewStatus = SystemManagement.PENDING_STATUS;
+                                tsNewStatus = Status.PENDING.description();
                             else
-                                tsNewStatus = SystemManagement.FAIL_STATUS;
+                                tsNewStatus = Status.FAIL.description();
                             break;
                         }
                     }

@@ -4,7 +4,7 @@
  * 
  * ***************************************************************************
  * 
- * Copyright (C) 2010-2014  Sergio Ferraresi
+ * Copyright (C) 2010-2016  Sergio Ferraresi
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,13 +29,14 @@
  * Information about the file:
  * Filename         TestCaseBuilder.java
  * Created on       2010-09-03
- * Last modified on 2014-12-09
+ * Last modified on 2016-02-11
  */
 package it.sergioferraresi.att.ui;
 
 import it.sergioferraresi.att.SystemManagement;
 import it.sergioferraresi.att.TestExecutor;
 import it.sergioferraresi.att.UserActionSimulator;
+import it.sergioferraresi.att.resources.ResourcesManager;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -47,7 +48,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -153,10 +153,11 @@ public class TestCaseBuilder extends JPanel implements ActionListener, MouseList
      * A String that identifies the static folder for static screenshots.
      */
     private String screenshotsTCStaticFolderPath;
-    /**
-     * URL values that identify the icons for the TestCaseBuilder window.
-     */
-    private URL greenLight, redLight;
+//    /**
+//     * Identify the images for the TestCaseBuilder window.
+//     */
+//    private static ImageIcon greenLight = new ImageIcon(TestCaseBuilder.class.getClassLoader().getResource("imgs/green_light.png")); //$NON-NLS-1$
+//    private static ImageIcon redLight = new ImageIcon(TestCaseBuilder.class.getClassLoader().getResource("imgs/red_light.png")); //$NON-NLS-1$
     /**
      * The Robot instance.
      */
@@ -175,9 +176,7 @@ public class TestCaseBuilder extends JPanel implements ActionListener, MouseList
      * @param testCaseName a String that identifies the name of the Test Case.
      */
     public TestCaseBuilder(int mode, String testCaseName) {
-        this.greenLight = getClass().getResource("programImages/green_light.png");
-        this.redLight = getClass().getResource("programImages/red_light.png");
-        WindowManager.getTestCaseBuilderFrame().setIconImage(new ImageIcon(this.redLight).getImage());
+        WindowManager.getTestCaseBuilderFrame().setIconImage(ResourcesManager.IMG_RED_LIGHT.getImage());
         SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Case Builder) Starting the Test Case Builder.");
         SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Case Builder) Test Case name: \"" + testCaseName + "\".");
         this.tmpX = 0;
@@ -221,13 +220,13 @@ public class TestCaseBuilder extends JPanel implements ActionListener, MouseList
             SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Case Builder) Opening the Generic Program: \"" + SystemManagement.getGenericProgramPath() + "\".");
             // Executes the choosed program.
             String[] cmd = null;
-            if (SystemManagement.getOSName().contains("Linux") == Boolean.TRUE) {
+            if (SystemManagement.IS_OS_LINUX) {
                 cmd = new String[3];
                 cmd[0] = "/bin/sh";
                 cmd[1] = "-c";
                 cmd[2] = SystemManagement.getGenericProgramPath();
             }
-            if (SystemManagement.getOSName().contains("Windows") == Boolean.TRUE) {
+            if (SystemManagement.IS_OS_WINDOWS) {
                 cmd = new String[5];
                 cmd[0] = "cmd";
                 cmd[1] = "/c";
@@ -249,7 +248,7 @@ public class TestCaseBuilder extends JPanel implements ActionListener, MouseList
         // Takes the fisrt desktop screenshot for the testBuilder backgroud.
         SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Case Builder) Updating the background with the next screenshot.");
         this.takeAnotherScreenshot();
-        WindowManager.getTestCaseBuilderFrame().setIconImage(new ImageIcon(this.greenLight).getImage());
+        WindowManager.getTestCaseBuilderFrame().setIconImage(ResourcesManager.IMG_GREEN_LIGHT.getImage());
     }
 
     /**
@@ -868,7 +867,7 @@ public class TestCaseBuilder extends JPanel implements ActionListener, MouseList
     private void acceptAndExecuteLastCommand() {
         if (!this.tbCMDNodesLast.isEmpty()) {
             SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Case Builder) Executing the Automatic Testing Tool command.");
-            WindowManager.getTestCaseBuilderFrame().setIconImage(new ImageIcon(this.redLight).getImage());
+            WindowManager.getTestCaseBuilderFrame().setIconImage(ResourcesManager.IMG_RED_LIGHT.getImage());
             WindowManager.getTestCaseBuilderFrame().toBack();
             WindowManager.getTestCaseBuilderFrame().setState(JFrame.ICONIFIED);
 
@@ -908,7 +907,7 @@ public class TestCaseBuilder extends JPanel implements ActionListener, MouseList
             this.tbCMDNodesLast.clear();
 
             this.robot.delay(500);
-            WindowManager.getTestCaseBuilderFrame().setIconImage(new ImageIcon(this.greenLight).getImage());
+            WindowManager.getTestCaseBuilderFrame().setIconImage(ResourcesManager.IMG_GREEN_LIGHT.getImage());
             WindowManager.getTestCaseBuilderFrame().setState(JFrame.NORMAL);
             WindowManager.getTestCaseBuilderFrame().toFront();
             WindowManager.getTestCaseBuilderFrame().repaint();
@@ -923,7 +922,7 @@ public class TestCaseBuilder extends JPanel implements ActionListener, MouseList
         if (this.isRecordingStarted) {
             if (!this.tbCMDNodesAll.isEmpty()) {
                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Case Builder) Executing the Automatic Testing Tool commands.");
-                WindowManager.getTestCaseBuilderFrame().setIconImage(new ImageIcon(this.redLight).getImage());
+                WindowManager.getTestCaseBuilderFrame().setIconImage(ResourcesManager.IMG_RED_LIGHT.getImage());
                 WindowManager.getTestCaseBuilderFrame().toBack();
                 WindowManager.getTestCaseBuilderFrame().setState(JFrame.ICONIFIED);
 
@@ -960,7 +959,7 @@ public class TestCaseBuilder extends JPanel implements ActionListener, MouseList
                 this.isRecordingStarted = Boolean.FALSE;
 
                 this.robot.delay(500);
-                WindowManager.getTestCaseBuilderFrame().setIconImage(new ImageIcon(this.greenLight).getImage());
+                WindowManager.getTestCaseBuilderFrame().setIconImage(ResourcesManager.IMG_GREEN_LIGHT.getImage());
                 WindowManager.getTestCaseBuilderFrame().setState(JFrame.NORMAL);
                 WindowManager.getTestCaseBuilderFrame().toFront();
                 WindowManager.getTestCaseBuilderFrame().repaint();

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Created-By: Sergio Ferraresi
+Main-Class: it.sergioferraresi.att.Main
+Sealed: true
+
+Name: it/sergioferraresi/att/
+Specification-Title: ATT - Automatic Testing Tool
+Specification-Version: 1.0.0.qualifier
+Specification-Vendor: MEEO S.r.l.
+Implementation-Title: it.sergioferraresi.att
+Implementation-Version: 1.0.0.qualifier
+Implementation-Vendor: MEEO S.r.l.

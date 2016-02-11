@@ -4,7 +4,7 @@
  * 
  * ***************************************************************************
  * 
- * Copyright (C) 2010-2014  Sergio Ferraresi
+ * Copyright (C) 2010-2016  Sergio Ferraresi
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,12 +29,15 @@
  * Information about the file:
  * Filename         ConsoleManager.java
  * Created on       2010-09-03
- * Last modified on 2014-12-09
+ * Last modified on 2016-02-11
  */
 package it.sergioferraresi.att.console;
 
 import it.sergioferraresi.att.SystemManagement;
 import it.sergioferraresi.att.TestExecutor;
+import it.sergioferraresi.att.model.AttInterface;
+import it.sergioferraresi.att.model.ProjectMode;
+import it.sergioferraresi.att.model.Status;
 
 import java.io.File;
 
@@ -64,7 +67,7 @@ public class ConsoleManager {
      */
     public ConsoleManager(String[] args) {
         // Inits the Automatic Testing Tool.
-        SystemManagement.initAutomaticTestingTool(SystemManagement.CONSOLE_INTERFACE);
+        SystemManagement.initAutomaticTestingTool(AttInterface.CONSOLE);
         // Gets the consoleModality.
         String consoleModality = args[0];
         // Check if correct Program invokation.
@@ -77,7 +80,7 @@ public class ConsoleManager {
                         projectPath += File.separator;
                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "Choosed the \"-c\" or the \"--create\" option: creating the \"" + projectName + "\" Project in the \"" + projectPath + "\" path.");
                     // Creates the Project.
-                    SystemManagement.manageProject(SystemManagement.CREATE_PROJECT_MODE, projectPath + projectName + File.separator);
+                    SystemManagement.manageProject(ProjectMode.CREATE, projectPath + projectName + File.separator);
                     SystemManagement.getConsole().printf("%1$s%n", "The folder tree for the Project was created in: \"" + SystemManagement.getMainWorkingFolder() + "\".");
                 } else
                     this.showHelpMessage(Boolean.TRUE);
@@ -97,7 +100,7 @@ public class ConsoleManager {
                     for (int i = 0; i < TestExecutor.getTestsResults().size(); i++)
                         SystemManagement.getConsole().printf("%1$s%n", TestExecutor.getTestsResults().get(i));
                     SystemManagement.getConsole().printf("%1$s%n", returnedValue);
-                    SystemManagement.getConsole().printf("%1$s%n", "Exit value: " + ((returnedValue == SystemManagement.PASS_EXIT_STATUS)? SystemManagement.PASS_STATUS:((returnedValue == SystemManagement.PENDING_EXIT_STATUS)? SystemManagement.PENDING_STATUS:((returnedValue == SystemManagement.FAIL_EXIT_STATUS)? SystemManagement.FAIL_STATUS:SystemManagement.ERROR_STATUS))));
+                    SystemManagement.getConsole().printf("%1$s%n", "Exit value: " + ((returnedValue == Status.PASS.exitCode())? Status.PASS.description():((returnedValue == Status.PENDING.exitCode())? Status.PENDING.description():((returnedValue == Status.FAIL.exitCode())? Status.FAIL.description() : Status.ERROR.description()))));
                     System.exit(returnedValue);
                 } else
                     this.showHelpMessage(Boolean.TRUE);
@@ -112,14 +115,14 @@ public class ConsoleManager {
                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "Choosed the \"-ot\"option: executing the tests stored in \"" + projectName + "\".");
                     // Executes Tests.
                     SystemManagement.getConsole().printf("%1$s%n", "Setting the Project Working Folder to \"" + projectPath + projectName + File.separator + "\". . .");
-                    SystemManagement.manageProject(SystemManagement.OPEN_PROJECT_MODE, projectPath + projectName + File.separator);
+                    SystemManagement.manageProject(ProjectMode.OPEN, projectPath + projectName + File.separator);
                     SystemManagement.getConsole().printf("%1$s%n", "Executing Tests.");
                     int returnedValue = TestExecutor.execute(files);
                     SystemManagement.getConsole().printf("%1$s%n", "Execution finished. Check the following reports files:");
                     for (int i = 0; i < TestExecutor.getTestsResults().size(); i++)
                         SystemManagement.getConsole().printf("%1$s%n", TestExecutor.getTestsResults().get(i));
                     SystemManagement.getConsole().printf("%1$s%n", returnedValue);
-                    SystemManagement.getConsole().printf("%1$s%n", "Exit value: " + ((returnedValue == SystemManagement.PASS_EXIT_STATUS)? SystemManagement.PASS_STATUS:((returnedValue == SystemManagement.PENDING_EXIT_STATUS)? SystemManagement.PENDING_STATUS:((returnedValue == SystemManagement.FAIL_EXIT_STATUS)? SystemManagement.FAIL_STATUS:SystemManagement.ERROR_STATUS))));
+                    SystemManagement.getConsole().printf("%1$s%n", "Exit value: " + ((returnedValue == Status.PASS.exitCode())? Status.PASS.description():((returnedValue == Status.PENDING.exitCode())? Status.PENDING.description():((returnedValue == Status.FAIL.exitCode())? Status.FAIL.description() : Status.ERROR.description()))));
                     System.exit(returnedValue);
                 } else
                     this.showHelpMessage(Boolean.TRUE);
@@ -138,11 +141,11 @@ public class ConsoleManager {
      */
     private void showHelpMessage(Boolean withError) {
         SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "Showing the Help Message.");
-        SystemManagement.getConsole().printf(SystemManagement.getOSNewLineCharacter());
+        SystemManagement.getConsole().printf(SystemManagement.NEW_LINE);
         SystemManagement.getConsole().printf("%1$s%n", "\tSYNOPSIS:");
-        SystemManagement.getConsole().printf(SystemManagement.getOSNewLineCharacter());
+        SystemManagement.getConsole().printf(SystemManagement.NEW_LINE);
         SystemManagement.getConsole().printf("%1$s%n", "\t\tjava -jar att.jar OPTION [[projectName projectPath] | [test1 test2 ...] | [projectName projectPath test1 test2 ...]]\"");
-        SystemManagement.getConsole().printf(SystemManagement.getOSNewLineCharacter());
+        SystemManagement.getConsole().printf(SystemManagement.NEW_LINE);
         SystemManagement.getConsole().printf("%1$s%n", "\tDESCRIPTION:");
         SystemManagement.getConsole().printf("%1$s%n", "\t\t-c, --create projectName projectPath");
         SystemManagement.getConsole().printf("%1$s%n", "\t\t\tcreate the Project called \"projectName\" in the path \"projectPath\" and exit");
@@ -153,7 +156,7 @@ public class ConsoleManager {
         SystemManagement.getConsole().printf("%1$s%n", "\t\t\twith -t, open the Project called \"projectName\" from the path \"projectPath\" and execute Tests");
         SystemManagement.getConsole().printf("%1$s%n", "\t\t-t, --tests test1 test2 ...");
         SystemManagement.getConsole().printf("%1$s%n", "\t\t\topen the Program default directory and execute Tests and exit");
-        SystemManagement.getConsole().printf(SystemManagement.getOSNewLineCharacter());
+        SystemManagement.getConsole().printf(SystemManagement.NEW_LINE);
         if (withError)
             SystemManagement.manageError(Boolean.TRUE, "Wrong usage of the Console Interface.");
     }

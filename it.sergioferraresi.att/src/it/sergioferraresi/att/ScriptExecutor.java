@@ -4,7 +4,7 @@
  * 
  * ***************************************************************************
  * 
- * Copyright (C) 2010-2014  Sergio Ferraresi
+ * Copyright (C) 2010-2016  Sergio Ferraresi
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,9 +29,11 @@
  * Information about the file:
  * Filename         ScriptExecutor.java
  * Created on       2010-10-08
- * Last modified on 2014-12-09
+ * Last modified on 2016-02-11
  */
 package it.sergioferraresi.att;
+
+import it.sergioferraresi.att.model.Status;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -85,7 +87,7 @@ public class ScriptExecutor {
             if (!scriptFile.exists()) {
                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Script Executor) The script \"" + scriptFile.getName() + "\" does not exist.");
                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_SEPARATOR_TYPE, null);
-                return SystemManagement.FAIL_EXIT_STATUS;
+                return Status.FAIL.exitCode();
             } else {
                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Script Executor) The script \"" + scriptFile.getName() + "\" exists.");
                 scriptFile.setExecutable(true, false);
@@ -97,14 +99,14 @@ public class ScriptExecutor {
                  */
                 String[] cmd = null;
                 // GNU/Linux case.
-                if (SystemManagement.getOSName().contains("Linux")) {
+                if (SystemManagement.IS_OS_LINUX) {
                     cmd = new String[3];
                     cmd[0] = "/bin/sh";
                     cmd[1] = "-c";
                     cmd[2] = scriptFile.getAbsolutePath();
                 }
                 // Windows case.
-                if (SystemManagement.getOSName().contains("Windows")) {
+                if (SystemManagement.IS_OS_WINDOWS) {
                     cmd = new String[7];
                     cmd[0] = "cmd";
                     cmd[1] = "/c";
@@ -138,16 +140,16 @@ public class ScriptExecutor {
                     }
                     ScriptExecutor.outputMessages.add(tmp);
                     if (error)
-                        return SystemManagement.FAIL_EXIT_STATUS;
+                        return Status.FAIL.exitCode();
                 } else {
                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Script Executor) Error while executing the script: " + cmd.toString());
                     tmp[0] = scriptFile.getName();
                     tmp[1] = "Error while executing the Script.";
                     ScriptExecutor.outputMessages.add(tmp);
-                    return SystemManagement.ERROR_EXIT_STATUS;
+                    return Status.ERROR.exitCode();
                 }
             }
         }
-        return SystemManagement.PASS_EXIT_STATUS;
+        return Status.PASS.exitCode();
     }
 }

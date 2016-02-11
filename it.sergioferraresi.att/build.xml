@@ -3,12 +3,23 @@
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
-        <jar destfile="C:/dev/ws/eclipse/git/att/it.sergioferraresi.att/att.jar" filesetmanifest="mergewithoutmain">
+        <jar destfile="./att.jar" filesetmanifest="mergewithoutmain">
             <manifest>
+                <!--<attribute name="Class-Path" value="."/>-->
+                <attribute name="Manifest-Version" value="1.0"/>
+                <attribute name="Created-By" value="Sergio Ferraresi"/>
                 <attribute name="Main-Class" value="it.sergioferraresi.att.Main"/>
-                <attribute name="Class-Path" value="."/>
+                <attribute name="Sealed" value="true"/>
+            	<section name="it/sergioferraresi/att/">
+            	    <attribute name="Specification-Title" value="ATT - Automatic Testing Tool"/>
+            	    <attribute name="Specification-Version" value="1.0.0.qualifier"/>
+            	    <attribute name="Specification-Vendor" value="MEEO S.r.l."/>
+            	    <attribute name="Implementation-Title" value="it.sergioferraresi.att"/>
+            	    <attribute name="Implementation-Version" value="1.0.0.qualifier"/>
+            	    <attribute name="Implementation-Vendor" value="MEEO S.r.l."/>
+            	</section>
             </manifest>
-            <fileset dir="C:/dev/ws/eclipse/git/att/it.sergioferraresi.att/bin"/>
+            <fileset dir="./bin"/>
         </jar>
     </target>
 </project>

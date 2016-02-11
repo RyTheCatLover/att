@@ -4,7 +4,7 @@
  * 
  * ***************************************************************************
  * 
- * Copyright (C) 2010-2014  Sergio Ferraresi
+ * Copyright (C) 2010-2016  Sergio Ferraresi
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,26 +29,31 @@
  * Information about the file:
  * Filename         WindowManager.java
  * Created on       2010-08-01
- * Last modified on 2014-12-14
+ * Last modified on 2016-02-11
  */
 package it.sergioferraresi.att.ui;
 
 import it.sergioferraresi.att.ScriptExecutor;
 import it.sergioferraresi.att.SystemManagement;
+import it.sergioferraresi.att.model.AttInterface;
+import it.sergioferraresi.att.model.ProjectMode;
+import it.sergioferraresi.att.model.Status;
+import it.sergioferraresi.att.model.XmlFileType;
 import it.sergioferraresi.att.TestExecutor;
+import it.sergioferraresi.att.resources.ResourcesManager;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -66,10 +71,8 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -104,8 +107,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Provides the Graphical User Interface (GUI) for the Automatic Testing Tool
- * Program.<br/>
+ * Provides the Graphical User Interface (GUI) for the Automatic Testing Tool Program.<br/>
  * Provides also some other methods used by the other class to modify the GUI.
  * 
  * @author  Sergio Ferraresi (psf563)
@@ -114,7 +116,7 @@ import org.xml.sax.SAXException;
 public class WindowManager extends JFrame implements ActionListener, WindowListener {
 	/*
 	 * TODO
-	 *The hypothetical commands `show w' and `show c' should show the appropriate parts of the General Public License. Of course, your program's commands might be different; for a GUI interface, you would use an “about box”. 
+	 *The hypothetical commands `show w' and `show c' should show the appropriate parts of the General Public License. Of course, your program's commands might be different; for a GUI interface, you would use an ï¿½about boxï¿½. 
 	 */
 	
 	
@@ -156,23 +158,23 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
      * Identifies an array of String for temporary use.
      */
     private String[] filenameList;
-
-    /**
-     * Identify the images of the arrow images of the Window Interface.
-     * TODO 2014-12-05 (psf563): create SharedResources class in *.resources.
-     */
-    private static ImageIcon addArrow = new ImageIcon(WindowManager.class.getClassLoader().getResource("it/sergioferraresi/att/resources/icon/green_arrow.png")); //$NON-NLS-1$
-    private static ImageIcon removeArrow = new ImageIcon(WindowManager.class.getClassLoader().getResource("it/sergioferraresi/att/resources/icon/red_arrow.png")); //$NON-NLS-1$
-    private static ImageIcon moveUpArrow = new ImageIcon(WindowManager.class.getClassLoader().getResource("it/sergioferraresi/att/resources/icon/up_black_arrow.png")); //$NON-NLS-1$
-    private static ImageIcon moveDownArrow = new ImageIcon(WindowManager.class.getClassLoader().getResource("it/sergioferraresi/att/resources/icon/down_black_arrow.png")); //$NON-NLS-1$
-
-    /**
-     * Identify the images of the icon and logo of the ATT Program.
-     * TODO 2014-12-05 (psf563): create SharedResources class in *.resources.
-     */
-    private static ImageIcon ATTIcon = new ImageIcon(WindowManager.class.getClassLoader().getResource("it/sergioferraresi/att/resources/icon/ATT_logo_icon.png"));
-    private static ImageIcon ATTLogo = new ImageIcon(WindowManager.class.getClassLoader().getResource("it/sergioferraresi/att/resources/icon/ATT_logo.png")); //$NON-NLS-1$
-    private static ImageIcon MEEOLogo = new ImageIcon(WindowManager.class.getClassLoader().getResource("it/sergioferraresi/att/resources/icon/MEEO_logo.png")); //$NON-NLS-1$
+//
+//    /**
+//     * Identify the images of the arrow images of the Window Interface.
+//     * TODO 2014-12-05 (psf563): create SharedResources class in *.resources.
+//     */
+//    private static ImageIcon addArrow = new ImageIcon(WindowManager.class.getClassLoader().getResource("imgs/green_arrow.png")); //$NON-NLS-1$
+//    private static ImageIcon removeArrow = new ImageIcon(WindowManager.class.getClassLoader().getResource("imgs/red_arrow.png")); //$NON-NLS-1$
+//    private static ImageIcon moveUpArrow = new ImageIcon(WindowManager.class.getClassLoader().getResource("imgs/up_black_arrow.png")); //$NON-NLS-1$
+//    private static ImageIcon moveDownArrow = new ImageIcon(WindowManager.class.getClassLoader().getResource("imgs/down_black_arrow.png")); //$NON-NLS-1$
+//
+//    /**
+//     * Identify the images of the icon and logo of the ATT Program.
+//     * TODO 2014-12-05 (psf563): create SharedResources class in *.resources.
+//     */
+//    private static ImageIcon ATTIcon = new ImageIcon(WindowManager.class.getClassLoader().getResource("imgs/ATT_logo_icon.png")); //$NON-NLS-1$
+//    private static ImageIcon ATTLogo = new ImageIcon(WindowManager.class.getClassLoader().getResource("imgs/ATT_logo.png")); //$NON-NLS-1$
+//    private static ImageIcon MEEOLogo = new ImageIcon(WindowManager.class.getClassLoader().getResource("imgs/MEEO_logo.png")); //$NON-NLS-1$
 
     /**
      * Initializes the Main frame, and its elements.
@@ -191,9 +193,9 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
         WindowManager.statusBar = new JLabel();
         WindowManager.main.getContentPane().add(WindowManager.statusBar, BorderLayout.SOUTH);
         // Inits the Automatic Testing Tool.
-        SystemManagement.initAutomaticTestingTool(SystemManagement.WINDOW_INTERFACE);
+        SystemManagement.initAutomaticTestingTool(AttInterface.WINDOW);
 
-        WindowManager.main.setIconImage(WindowManager.ATTIcon.getImage());
+        WindowManager.main.setIconImage(ResourcesManager.IMG_ATT_ICON.getImage());
 
         /*
          * MenuBar.
@@ -265,9 +267,9 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
          * Windows-based OS, the name is composed by "Windows" plus the specific
          * name of OS (like XP, Vista, ...).
          */
-        if (SystemManagement.getOSName().contains("Linux"))
+        if (SystemManagement.IS_OS_LINUX)
             chooseCygwinPath.setEnabled(false);
-        if (SystemManagement.getOSName().contains("Windows")) {
+        if (SystemManagement.IS_OS_WINDOWS) {
             chooseCygwinPath.setEnabled(true);
             SystemManagement.setCygwinPath(SystemManagement.CYGWIN_PATH);
         }
@@ -290,6 +292,9 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
         JMenuItem aboutProgram = new JMenuItem("Automating Testing Tool program");
         about.add(aboutProgram);
         aboutProgram.addActionListener(WindowManager.this);
+        JMenuItem aboutGnuGpl = new JMenuItem("GNU General Public License");
+        about.add(aboutGnuGpl);
+        aboutGnuGpl.addActionListener(WindowManager.this);
         mb.add(about);
         WindowManager.main.setJMenuBar(mb);
 
@@ -316,16 +321,16 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
         this.fileChooser.setMultiSelectionEnabled(false);
         this.panelTitle = new JLabel();
         this.numberOf = new JLabel();
-        this.addItemToButton = new JButton(WindowManager.addArrow);
+        this.addItemToButton = new JButton(ResourcesManager.IMG_ADD_ARROW);
         this.addItemToButton.setActionCommand("Add Selected Item");
         this.addItemToButton.addActionListener(WindowManager.this);
-        this.removeItemFromButton = new JButton(WindowManager.removeArrow);
+        this.removeItemFromButton = new JButton(ResourcesManager.IMG_REMOVE_ARROW);
         this.removeItemFromButton.setActionCommand("Remove Selected Item");
         this.removeItemFromButton.addActionListener(WindowManager.this);
-        this.moveUpButton = new JButton(WindowManager.moveUpArrow);
+        this.moveUpButton = new JButton(ResourcesManager.IMG_MOVE_UP_ARROW);
         this.moveUpButton.setActionCommand("Move Up Selected Item");
         this.moveUpButton.addActionListener(WindowManager.this);
-        this.moveDownButton = new JButton(WindowManager.moveDownArrow);
+        this.moveDownButton = new JButton(ResourcesManager.IMG_MOVE_DOWN_ARROW);
         this.moveDownButton.setActionCommand("Move Down Selected Item");
         this.moveDownButton.addActionListener(WindowManager.this);
         this.executeButton = new JButton();
@@ -363,7 +368,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                 + "                                 <li>To gather information about MEEO and Automatic Testing Tool Program, use the \"About\" Menu.</li>"
                 + "                             </ul></p>"
                 + "                             <br/><br/><br/>"
-                + "                             <p align=\"center\"><img src=\"" + WindowManager.ATTLogo + "\"></img></p>"
+                + "                             <p align=\"center\"><img src=\"" + ResourcesManager.IMG_ATT_LOGO + "\"></img></p>"
                 + "                         </body>"
                 + "                     </html>");
         this.initialMessage.setBounds(WindowManager.mainJP.getX(), WindowManager.mainJP.getY(), WindowManager.mainJP.getWidth(), (WindowManager.mainJP.getHeight()));
@@ -374,7 +379,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
         // Copies the testXMLSchema.xtd file in the tests folder.
         SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "Copying the \"testXMLSchema.xsd\" file in the \"tests\" folder.");
         try {
-            InputStream is = getClass().getResourceAsStream("../resources/xsd/testXMLSchema.xsd"); //$NON-NLS-1$
+            InputStream is = WindowManager.class.getClassLoader().getResourceAsStream("xsds/testXMLSchema.xsd"); //$NON-NLS-1$
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
             BufferedWriter bw = new BufferedWriter(new FileWriter(new File(SystemManagement.getTestsWorkingFolder() + "testXMLSchema.xsd")));
@@ -398,7 +403,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
         // Copies the reportsXMLSchema.xtd file in the results folder.
         SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "Copying the \"reportsXMLSchema.xsd\" file in the \"results\" folder.");
         try {
-            InputStream is = getClass().getResourceAsStream("../resources/xsd/reportsXMLSchema.xsd"); //$NON-NLS-1$
+            InputStream is = WindowManager.class.getClassLoader().getResourceAsStream("xsds/reportsXMLSchema.xsd"); //$NON-NLS-1$
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
             BufferedWriter bw = new BufferedWriter(new FileWriter(new File(SystemManagement.getResultsWorkingFolder() + "reportsXMLSchema.xsd")));
@@ -475,7 +480,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "\t(File Chooser) Closing the File Chooser.");
                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "Project Path: \"" + this.fileChooser.getSelectedFile().getAbsolutePath() + "\".");
                     // Creates the Project.
-                    SystemManagement.manageProject(SystemManagement.CREATE_PROJECT_MODE, this.fileChooser.getSelectedFile().getAbsolutePath() + File.separator + projectName + File.separator);
+                    SystemManagement.manageProject(ProjectMode.CREATE, this.fileChooser.getSelectedFile().getAbsolutePath() + File.separator + projectName + File.separator);
                     JOptionPane.showMessageDialog(WindowManager.main, "Project \"" + SystemManagement.getMainWorkingFolder() + "\" created.", "Create Project Folder Tree", JOptionPane.INFORMATION_MESSAGE);
                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "Project \"" + SystemManagement.getMainWorkingFolder() + "\" created.");
                 }
@@ -499,7 +504,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                 // Opens the Project.
                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "Project Path: \"" + this.fileChooser.getSelectedFile().getAbsolutePath() + File.separator + "\".");
                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "Opening Project.");
-                SystemManagement.manageProject(SystemManagement.OPEN_PROJECT_MODE, this.fileChooser.getSelectedFile().getAbsolutePath() + File.separator);
+                SystemManagement.manageProject(ProjectMode.OPEN, this.fileChooser.getSelectedFile().getAbsolutePath() + File.separator);
                 JOptionPane.showMessageDialog(WindowManager.main, "Project \"" + SystemManagement.getMainWorkingFolder() + "\" opened.", "Open Project", JOptionPane.INFORMATION_MESSAGE);
                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "Project \"" + SystemManagement.getMainWorkingFolder() + "\" opened.");
             }
@@ -515,7 +520,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                  * SystemManagement.appendToLogAndToInterface() just do this.
                  */
                 SystemManagement.emptyExecutionFolder();
-                System.exit(SystemManagement.PASS_EXIT_STATUS);
+                System.exit(Status.PASS.exitCode());
             }
         }
 
@@ -1080,7 +1085,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                                         // Writes the TS name only for the first TC.
                                         Object[] tmpA = new Object[4];
                                         if (j == 0)
-                                            tmpA[0] = (tsStatus.equals(SystemManagement.PASS_STATUS))? "<html><head></head><body><p color=\"green\">" + tsName.substring((tsName.lastIndexOf(File.separator) + 1)) + "</p></body></html>":((tsStatus.equals(SystemManagement.PENDING_STATUS))? "<html><head></head><body><p color=\"#FF9900\">" + tsName.substring((tsName.lastIndexOf(File.separator) + 1)) + "</p></body></html>":"<html><head></head><body><p color=\"red\"><b>" + tsName.substring((tsName.lastIndexOf(File.separator) + 1)) + "</b></p></body></html>");
+                                            tmpA[0] = (tsStatus.equals(Status.PASS.description()))? "<html><head></head><body><p color=\"green\">" + tsName.substring((tsName.lastIndexOf(File.separator) + 1)) + "</p></body></html>":((tsStatus.equals(Status.PENDING.description()))? "<html><head></head><body><p color=\"#FF9900\">" + tsName.substring((tsName.lastIndexOf(File.separator) + 1)) + "</p></body></html>":"<html><head></head><body><p color=\"red\"><b>" + tsName.substring((tsName.lastIndexOf(File.separator) + 1)) + "</b></p></body></html>");
                                         else
                                             tmpA[0] = "";
                                         // Gets TC name.
@@ -1089,7 +1094,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                                         tmpA[1] = tcName;
                                         // Gets TC status.
                                         String tcStatus  = tcNodes.item(j).getChildNodes().item(3).getChildNodes().item(0).getNodeValue();
-                                        tmpA[2] = (tcStatus.equals(SystemManagement.PASS_STATUS))? "<html><head></head><body><p color=\"green\">" + SystemManagement.PASS_STATUS + "</p></body></html>":((tcStatus.equals(SystemManagement.PENDING_STATUS)? "<html><head></head><body><p color=\"#FF9900\">" + SystemManagement.PENDING_STATUS + "</p></body></html>":((tcStatus.equals(SystemManagement.FAIL_STATUS)? "<html><head></head><body><p color=\"red\"><b>" + SystemManagement.FAIL_STATUS + "</b></p></body></html>":"<html><head></head><body><p color=\"red\"><b>" + SystemManagement.ERROR_STATUS + "</b></p></body></html>"))));
+                                        tmpA[2] = (tcStatus.equals(Status.PASS.description()))? "<html><head></head><body><p color=\"green\">" + Status.PASS.description() + "</p></body></html>":((tcStatus.equals(Status.PENDING.description())? "<html><head></head><body><p color=\"#FF9900\">" + Status.PENDING.description() + "</p></body></html>":((tcStatus.equals(Status.FAIL.description())? "<html><head></head><body><p color=\"red\"><b>" + Status.FAIL.description() + "</b></p></body></html>":"<html><head></head><body><p color=\"red\"><b>" + Status.ERROR.description() + "</b></p></body></html>"))));
                                         /*
                                          * Gets all the screenshotsToVerify nodes.
                                          * Useful to avoid null Exception.
@@ -1189,7 +1194,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
              * Don't need to check the OS because this menu item is enabled only
              * in Windows.
              */
-            if (SystemManagement.getOSName().contains("Windows XP"))
+            if (SystemManagement.IS_OS_WINDOWS_XP)
                 this.fileChooser.setCurrentDirectory(new File(SystemManagement.WINDOWSXP_GENERIC_PROGRAM_PATH));
             else
                 this.fileChooser.setCurrentDirectory(new File(SystemManagement.WINDOWS_GENERIC_PROGRAM_PATH));
@@ -1220,9 +1225,9 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
              * Windows-based OS, the name is composed by "Windows" plus the
              * specific name of OS (like XP, Vista, ...).
              */
-            if (SystemManagement.getOSName().contains("Linux"))
+            if (SystemManagement.IS_OS_LINUX)
                 this.fileChooser.setCurrentDirectory(new File(SystemManagement.LINUX_DEFAULT_EDITOR_PATH));
-            if (SystemManagement.getOSName().contains("Windows")) {
+            if (SystemManagement.IS_OS_WINDOWS) {
                 this.fileChooser.setCurrentDirectory(new File(SystemManagement.WINDOWS_DEFAULT_EDITOR_PATH));
                 filter = new FileNameExtensionFilter("Windows EXE Files", "exe");
                 this.fileChooser.setFileFilter(filter);
@@ -1239,7 +1244,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "\t(File Chooser) Text Editor selected: \"" + this.fileChooser.getSelectedFile().getAbsolutePath() + "\".");
             }
             // On exit... Removing the file filter
-            if (SystemManagement.getOSName().contains("Windows"))
+            if (SystemManagement.IS_OS_WINDOWS)
                 this.fileChooser.removeChoosableFileFilter(filter);
             SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "\t(File Chooser) Closing the File Chooser.");
             SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "Text Editor Path: \"" + SystemManagement.getTextEditorPath() + "\".");
@@ -1295,11 +1300,10 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
 
         if (e.equals("MEEO")) {
             SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "Clicked on \"About --> MEEO\".");
-            SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "About message opened.");
             JOptionPane.showMessageDialog(WindowManager.main, "<html>"
                     + "                                             <head></head>"
                     + "                                             <body>"
-                    + "                                                 <p align=\"center\"><img src=\"" + WindowManager.MEEOLogo + "\"></img></p>"
+                    + "                                                 <p align=\"center\"><img src=\"" + ResourcesManager.IMG_MEEO_LOGO + "\"></img></p>"
                     + "                                                 <h2 align=\"center\"><b>M</b>eteorological and <b>E</b>nvironmental <b>E</b>arth <b>O</b>bservation S.r.l.</h2>"
                     + "                                                 <p align=\"left\">Site: <a href=\"http://www.meeo.it\">http://www.meeo.it</a>"
                     + "                                                 <br/>Info: <a href=\"mailto:info@meeo.it\">info@meeo.it</a>"
@@ -1334,15 +1338,15 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
             mess.setSize(500, 200);
             mess.setLocation(((SystemManagement.getScreenWidth() - mess.getWidth()) / 2), ((SystemManagement.getScreenHeight() - mess.getHeight()) / 2));
             mess.setVisible(true);*/
+            SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "About message opened.");
         }
 
         if (e.equals("Automating Testing Tool program")) {
             SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "Clicked on \"About --> Automating Testing Tool program\".");
-            SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "About message opened.");
             JOptionPane.showMessageDialog(WindowManager.main, "<html>"
                     + "                                             <head></head>"
                     + "                                             <body>"
-                    + "                                                 <p align=\"center\"><img src=\"" + WindowManager.ATTLogo + "\"></img></p>"
+                    + "                                                 <p align=\"center\"><img src=\"" + ResourcesManager.IMG_ATT_LOGO + "\"></img></p>"
                     + "                                                 <h2 align=\"center\"><b>A</b>utomatic <b>T</b>esting <b>T</b>ool</h2>"
                     + "                                                 <p align=\"left\">Version: 1.0 (release 20101209fr)"
                     + "                                                 <br/>Author:  Sergio Ferraresi (email: <a href=\"mailto:dev@sergioferraresi.it\">dev@sergioferraresi.it</a>)"
@@ -1374,6 +1378,24 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
             });
             mess.add(aboutATT);
             mess.setVisible(true);*/
+            SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "About message opened.");
+        }
+
+        if (e.equals("GNU General Public License")) {
+            SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "Clicked on \"About --> GNU General Public License\".");
+        	// TODO
+            JOptionPane.showMessageDialog(WindowManager.main, "<html>"
+                    + "                                             <head></head>"
+                    + "                                             <body>"
+                    + "                                             	<h1 align=\"center\">GNU GENERAL PUBLIC LICENSE</h1>"
+                    + "                                             	<h3 align=\"center\">Version 3, 29 June 2007</h3>"
+                    + "                                                 <p align=\"left\">Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/><br/>"
+                    + "                                                 	Everyone is permitted to copy and distribute verbatim copies<br/>"
+                    + "                                                 	of this license document, but changing it is not allowed.</p>"
+                    + "                                                 <p align=\"left\">TODO</p>"
+                    + "                                             </body>"
+                    + "                                         </html>", "GNU GENERAL PUBLIC LICENSE", JOptionPane.PLAIN_MESSAGE);
+            SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "About message opened.");
         }
 
         /**
@@ -1396,9 +1418,9 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                 for (int i = 0; i < this.selectedElementsList.getModel().getSize(); i++)
                     scriptsList[i] = SystemManagement.getScriptsWorkingFolder() + this.selectedElementsList.getModel().getElementAt(i);
                 int returnedValue = ScriptExecutor.execute(scriptsList);
-                if (returnedValue == SystemManagement.PASS_EXIT_STATUS)
+                if (returnedValue == Status.PASS.exitCode())
                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Scripts Executor) Scripts Execution finished.");
-                if (returnedValue == SystemManagement.FAIL_EXIT_STATUS)
+                if (returnedValue == Status.FAIL.exitCode())
                     SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Scripts Executor) Scripts Execution interrupted.");
                 JOptionPane.showMessageDialog(WindowManager.main, "Scripts Execution finished.", "Scripts Executor", JOptionPane.INFORMATION_MESSAGE);
 
@@ -1496,7 +1518,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                     // Check testBuilderJP fields.
                     if ((this.filename.length() != 0) && (this.title.length() != 0) && (this.author.length() != 0) && (this.version.length() != 0) && (this.description.length() != 0) && (this.purpose.length() != 0)) {
                         SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Case Builder) Creating the XTD file: \"" + this.filename + "\".");
-                        SystemManagement.createXMLFile(SystemManagement.getTestsWorkingFolder(), this.filename, SystemManagement.XTD_TYPE);
+                        SystemManagement.createXMLFile(SystemManagement.getTestsWorkingFolder(), this.filename, XmlFileType.XTD);
                         // Root Node.
                         Node rootNode = SystemManagement.createXMLNode("testDescription", null);
                         SystemManagement.appendXMLChildToXMLNode(null, rootNode);
@@ -1548,10 +1570,10 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                                  * Windows-based OS, the name is composed by "Windows" plus the
                                  * specific name of OS (like XP, Vista, ...).
                                  */
-                                if (SystemManagement.getOSName().contains("Linux"))
+                                if (SystemManagement.IS_OS_LINUX)
                                     this.fileChooser.setCurrentDirectory(new File(SystemManagement.LINUX_GENERIC_PROGRAM_PATH));
-                                if (SystemManagement.getOSName().contains("Windows")) {
-                                    if (SystemManagement.getOSName().contains("Windows XP"))
+                                if (SystemManagement.IS_OS_WINDOWS) {
+                                    if (SystemManagement.IS_OS_WINDOWS_XP)
                                         this.fileChooser.setCurrentDirectory(new File(SystemManagement.WINDOWSXP_GENERIC_PROGRAM_PATH));
                                     else
                                         this.fileChooser.setCurrentDirectory(new File(SystemManagement.WINDOWS_GENERIC_PROGRAM_PATH));
@@ -1574,7 +1596,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                                 } else
                                     returnVal = -1;
                                 // On exit... Removing the file filter
-                                if (SystemManagement.getOSName().contains("Windows"))
+                                if (SystemManagement.IS_OS_WINDOWS)
                                     this.fileChooser.removeChoosableFileFilter(filter);
                                 SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Case Builder - File Chooser) Closing the File Chooser.");
                             }
@@ -1648,7 +1670,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                     // Check testBuilderJP fields.
                     if ((this.filename.length() != 0) && (this.title.length() != 0) && (this.author.length() != 0) && (this.version.length() != 0) && (this.description.length() != 0) && (this.purpose.length() != 0)) {
                         SystemManagement.appendToLogAndToInterface(SystemManagement.LOG_TEXT_TYPE, "(Test Suite Builder) Creating the XTD file: \"" + this.filename + "\".");
-                        SystemManagement.createXMLFile(SystemManagement.getTestsWorkingFolder(), this.filename, SystemManagement.XTD_TYPE);
+                        SystemManagement.createXMLFile(SystemManagement.getTestsWorkingFolder(), this.filename, XmlFileType.XTD);
                         // Root Node.
                         Node rootNode = SystemManagement.createXMLNode("testDescription", null);
                         SystemManagement.appendXMLChildToXMLNode(null, rootNode);
@@ -2064,7 +2086,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                                     // Writes the TS name only for the first TC.
                                     Object[] tmpA = new Object[4];
                                     if (j == 0)
-                                        tmpA[0] = (tsStatus.equals(SystemManagement.PASS_STATUS))? "<html><head></head><body><p color=\"green\">" + tsName.substring((tsName.lastIndexOf(File.separator) + 1)) + "</p></body></html>":((tsStatus.equals(SystemManagement.PENDING_STATUS))? "<html><head></head><body><p color=\"#FF9900\">" + tsName.substring((tsName.lastIndexOf(File.separator) + 1)) + "</p></body></html>":"<html><head></head><body><p color=\"red\"><b>" + tsName.substring((tsName.lastIndexOf(File.separator) + 1)) + "</b></p></body></html>");
+                                        tmpA[0] = (tsStatus.equals(Status.PASS.description()))? "<html><head></head><body><p color=\"green\">" + tsName.substring((tsName.lastIndexOf(File.separator) + 1)) + "</p></body></html>":((tsStatus.equals(Status.PENDING.description()))? "<html><head></head><body><p color=\"#FF9900\">" + tsName.substring((tsName.lastIndexOf(File.separator) + 1)) + "</p></body></html>":"<html><head></head><body><p color=\"red\"><b>" + tsName.substring((tsName.lastIndexOf(File.separator) + 1)) + "</b></p></body></html>");
                                     else
                                         tmpA[0] = "";
                                     // Gets TC name.
@@ -2073,7 +2095,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                                     tmpA[1] = tcName;
                                     // Gets TC status.
                                     String tcStatus  = tcNodes.item(j).getChildNodes().item(3).getChildNodes().item(0).getNodeValue();
-                                    tmpA[2] = (tcStatus.equals(SystemManagement.PASS_STATUS))? "<html><head></head><body><p color=\"green\">" + SystemManagement.PASS_STATUS + "</p></body></html>":((tcStatus.equals(SystemManagement.PENDING_STATUS))? "<html><head></head><body><p color=\"#FF9900\">" + SystemManagement.PENDING_STATUS + "</p></body></html>":((tcStatus.equals(SystemManagement.FAIL_STATUS))? "<html><head></head><body><p color=\"red\"><b>" + SystemManagement.FAIL_STATUS + "</b></p></body></html>":"<html><head></head><body><p color=\"red\"><b>" + SystemManagement.ERROR_STATUS + "</b></p></body></html>"));
+                                    tmpA[2] = (tcStatus.equals(Status.PASS.description()))? "<html><head></head><body><p color=\"green\">" + Status.PASS.description() + "</p></body></html>":((tcStatus.equals(Status.PENDING.description()))? "<html><head></head><body><p color=\"#FF9900\">" + Status.PENDING.description() + "</p></body></html>":((tcStatus.equals(Status.FAIL.description()))? "<html><head></head><body><p color=\"red\"><b>" + Status.FAIL.description() + "</b></p></body></html>":"<html><head></head><body><p color=\"red\"><b>" + Status.ERROR.description() + "</b></p></body></html>"));
                                     /*
                                      * Gets all the screenshotsToVerify nodes.
                                      * Useful to avoid null Exception.
@@ -2138,8 +2160,8 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                             }
                             Object[] tmpA = new Object[4];
                             tmpA[0] = "N/A";
-                            tmpA[1] = (tcStatus.equals(SystemManagement.PASS_STATUS))? "<html><head></head><body><p color=\"green\">" + tcName.substring((tcName.lastIndexOf(File.separator) + 1)) + "</p></body></html>":((tcStatus.equals(SystemManagement.PENDING_STATUS))? "<html><head></head><body><p color=\"#FF9900\">" + tcName.substring((tcName.lastIndexOf(File.separator) + 1)) + "</p></body></html>":"<html><head></head><body><p color=\"red\"><b>" + tcName.substring((tcName.lastIndexOf(File.separator) + 1)) + "</b></p></body></html>");
-                            tmpA[2] = (tcStatus.equals(SystemManagement.PASS_STATUS))? "<html><head></head><body><p color=\"green\">" + SystemManagement.PASS_STATUS + "</p></body></html>":((tcStatus.equals(SystemManagement.PENDING_STATUS))? "<html><head></head><body><p color=\"#FF9900\">" + SystemManagement.PENDING_STATUS + "</p></body></html>":((tcStatus.equals(SystemManagement.FAIL_STATUS))? "<html><head></head><body><p color=\"red\"><b>" + SystemManagement.FAIL_STATUS + "</b></p></body></html>":"<html><head></head><body><p color=\"red\"><b>" + SystemManagement.ERROR_STATUS + "</b></p></body></html>"));
+                            tmpA[1] = (tcStatus.equals(Status.PASS.description()))? "<html><head></head><body><p color=\"green\">" + tcName.substring((tcName.lastIndexOf(File.separator) + 1)) + "</p></body></html>":((tcStatus.equals(Status.PENDING.description()))? "<html><head></head><body><p color=\"#FF9900\">" + tcName.substring((tcName.lastIndexOf(File.separator) + 1)) + "</p></body></html>":"<html><head></head><body><p color=\"red\"><b>" + tcName.substring((tcName.lastIndexOf(File.separator) + 1)) + "</b></p></body></html>");
+                            tmpA[2] = (tcStatus.equals(Status.PASS.description()))? "<html><head></head><body><p color=\"green\">" + Status.PASS.description() + "</p></body></html>":((tcStatus.equals(Status.PENDING.description()))? "<html><head></head><body><p color=\"#FF9900\">" + Status.PENDING.description() + "</p></body></html>":((tcStatus.equals(Status.FAIL.description()))? "<html><head></head><body><p color=\"red\"><b>" + Status.FAIL.description() + "</b></p></body></html>":"<html><head></head><body><p color=\"red\"><b>" + Status.ERROR.description() + "</b></p></body></html>"));
                             tmpA[3] = tcVerify;
                             dataAL.add(tmpA);
                         }
@@ -2225,7 +2247,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
              * SystemManagement.appendToLogAndToInterface() just do this.
              */
             SystemManagement.emptyExecutionFolder();
-            System.exit(SystemManagement.PASS_EXIT_STATUS);
+            System.exit(Status.PASS.exitCode());
         }
     }
 
@@ -2439,7 +2461,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
              */
             String[] cmd = null;
             // GNU/Linux case.
-            if (SystemManagement.getOSName().contains("Linux")) {
+            if (SystemManagement.IS_OS_LINUX) {
                 cmd = new String[3];
                 cmd[0] = "/bin/sh";
                 cmd[1] = "-c";
@@ -2455,7 +2477,7 @@ public class WindowManager extends JFrame implements ActionListener, WindowListe
                 }
             }
             // Windows case.
-            if (SystemManagement.getOSName().contains("Windows")) {
+            if (SystemManagement.IS_OS_WINDOWS) {
                 // Opening the text editor to create a file.
                 if (dirPath == null) {
                     cmd = new String[5];
